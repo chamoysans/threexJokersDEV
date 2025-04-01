@@ -49,7 +49,9 @@ local jokerThing = SMODS.Joker{
             card.ability.extra.active = true
           end
         elseif context.joker_main and card.ability.extra.active then
-          card.ability.extra.active = false
+          if not context.blueprint_card then
+            card.ability.extra.active = false
+          end
           return {
             message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.Xmult } },
             Xmult_mod = card.ability.extra.Xmult
