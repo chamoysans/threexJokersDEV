@@ -45,23 +45,3 @@ local seenoevil = SMODS.Joker{
 }
 
 G.P_CENTERS["j_threex_seenoevil"] = seenoevil
-
-CardSleeves.Sleeve {
-	key = "testDecl",
-    prefix_config = {atlas=false},
-    atlas = "casl_sleeve_atlas",
-    pos = { x = 1, y = 3 },
-    loc_txt = {
-        name = "testDeck",
-        text = { "testDeckkkkk" }
-    },
-    apply = function(self)
-        G.E_MANAGER:add_event(Event({
-            func = function()
-                add_joker("j_threex_seenoevil", nil, false, false)
-                return true
-            end
-        }))
-    end,
-	unlocked = true,
-}

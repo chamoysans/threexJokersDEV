@@ -69,25 +69,3 @@ local loot = SMODS.Joker{
 }
 
 G.P_CENTERS["j_threex_loot"] = loot
-
-if CardSleeves then
-  CardSleeves.Sleeve {
-    key = "wasdwasdwasdwasd",
-      prefix_config = {atlas=false},
-      atlas = "casl_sleeve_atlas",
-      pos = { x = 1, y = 3 },
-      loc_txt = {
-          name = "wasdwasdwasdwasdwasd",
-          text = { "dsawdsawdsawdsawdsawdsawd" }
-      },
-      apply = function(self)
-          G.E_MANAGER:add_event(Event({
-              func = function()
-                  add_joker("j_threex_loot", nil, false, false)
-                  return true
-              end
-          }))
-      end,
-    unlocked = true,
-  }
-end

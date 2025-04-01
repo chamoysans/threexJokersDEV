@@ -38,6 +38,15 @@ local clowncar = SMODS.Joker{
       }
     end, 
     calculate = function(self, card, context)
+
+      if context.cardarea == G.jokers then
+        if context.before then
+          if next(context.poker_hands['Full House']) then
+            card.ability.extra.current = card.ability.extra.current + card.ability.extra.chips
+          end
+        end
+      end
+
       if context.end_of_round
 			and not context.individual
 			and not context.repetition
@@ -55,23 +64,3 @@ local clowncar = SMODS.Joker{
 }
 
 G.P_CENTERS["j_threex_clowncar"] = clowncar
-
-CardSleeves.Sleeve {
-	key = "testDeckAgainEEEEE",
-    prefix_config = {atlas=false},
-    atlas = "casl_sleeve_atlas",
-    pos = { x = 1, y = 3 },
-    loc_txt = {
-        name = "testDeckokjknklnaskldnkl",
-        text = { ",mkmsdnfmnsdmfklnds" }
-    },
-    apply = function(self)
-        G.E_MANAGER:add_event(Event({
-            func = function()
-                add_joker("j_threex_clowncar", nil, false, false)
-                return true
-            end
-        }))
-    end,
-	unlocked = true,
-}

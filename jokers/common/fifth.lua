@@ -60,25 +60,3 @@ local jokerThing = SMODS.Joker{
 }
 
 G.P_CENTERS["j_threex_fifth"] = jokerThing
-
-if CardSleeves then
-  CardSleeves.Sleeve {
-    key = "AUGHHHHHHHHHHHHH",
-      prefix_config = {atlas=false},
-      atlas = "casl_sleeve_atlas",
-      pos = { x = 1, y = 3 },
-      loc_txt = {
-          name = "Fifth",
-          text = { "Fifth" }
-      },
-      apply = function(self)
-          G.E_MANAGER:add_event(Event({
-              func = function()
-                  add_joker("j_threex_fifth", nil, false, false)
-                  return true
-              end
-          }))
-      end,
-    unlocked = true,
-  }
-end

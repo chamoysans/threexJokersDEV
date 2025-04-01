@@ -29,10 +29,15 @@ local jokerThing = SMODS.Joker{
     blueprint_compat = true, 
     atlas = "a_threex_sheet",
     loc_vars = function(self, info_queue, center)
+      return {
+        vars = {
+          
+        }
+      }
     end, 
     calculate = function(self, card, context)
       return true
     end,
 }
 
-G.P_CENTERS[jokerThing.key] = jokerThing
+G.P_CENTERS["j_threex_blank"] = jokerThing
