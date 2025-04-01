@@ -81,28 +81,4 @@ SMODS.Back {
       }))
   end,
   unlocked = true,
-} 
-
-
-
-if CardSleeves then
-  CardSleeves.Sleeve {
-    key = "testDeckAgainAAAAAAAA",
-      prefix_config = {atlas=false},
-      atlas = "casl_sleeve_atlas",
-      pos = { x = 1, y = 3 },
-      loc_txt = {
-          name = "Orchid",
-          text = { "Orchid" }
-      },
-      apply = function(self)
-          G.E_MANAGER:add_event(Event({
-              func = function()
-                  add_joker("j_threex_orchid", nil, false, false)
-                  return true
-              end
-          }))
-      end,
-    unlocked = true,
-  }
-end
+}
