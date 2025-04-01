@@ -21,6 +21,8 @@ local common = {
     "loot",
     "sharpshooter",
     "blank",
+    "student",
+    "fifth",
     "retriggerNum/firebrick",
     "retriggerNum/coral",
     "retriggerNum/golden",
