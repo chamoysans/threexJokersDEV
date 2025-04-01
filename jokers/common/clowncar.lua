@@ -43,7 +43,17 @@ local clowncar = SMODS.Joker{
         if context.before then
           if next(context.poker_hands['Full House']) then
             card.ability.extra.current = card.ability.extra.current + card.ability.extra.chips
+            return {
+              delay = 0.2,
+              message = "Upgrade!",
+              colour = G.C.CHIPS
+            }
           end
+        elseif context.joker_main then
+          return {  
+            chip_mod = card.ability.extra.current,
+            message = localize { type = 'variable', key = 'a_chips', vars = { card.ability.extra.current } }
+          }
         end
       end
 
