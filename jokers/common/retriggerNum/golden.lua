@@ -22,7 +22,7 @@ local jokerThing = SMODS.Joker{
     },
     pos = {x = 2, y = 1}, 
     loc_txt = {
-      name = capitalize(jokerName) .. " Joker", 
+      name = capitalize(jokerName) .. "rod Joker", 
       text = {
         "Retriggers {C:attention}#1#s{}",
       }
