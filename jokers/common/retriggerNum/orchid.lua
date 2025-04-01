@@ -55,22 +55,54 @@ local jokerThing = SMODS.Joker{
 
 G.P_CENTERS["j_threex_" .. jokerName] = jokerThing
 
-CardSleeves.Sleeve {
-	key = "testDeckAgainAAAAAAAA",
-    prefix_config = {atlas=false},
-    atlas = "casl_sleeve_atlas",
-    pos = { x = 1, y = 3 },
-    loc_txt = {
-        name = "Orchid",
-        text = { "Orchid" }
-    },
-    apply = function(self)
-        G.E_MANAGER:add_event(Event({
-            func = function()
-                add_joker("j_threex_orchid", nil, false, false)
-                return true
-            end
-        }))
-    end,
-	unlocked = true,
-}
+SMODS.Back {
+  key = 'AAAAA',
+  loc_txt = {
+      name = "Tens",
+      text = {
+          "AT"
+      }
+  },
+  name = "AAAAA",
+  pos = {x = 0, y = 0},
+  apply = function(self)
+      G.E_MANAGER:add_event(Event({
+          func = function()
+              for index = #G.playing_cards, 1, -1 do
+                  local suit = "S_"
+                  local rank = "10"
+
+                  G.playing_cards[index]:set_base(G.P_CARDS[suit .. rank])
+              end
+
+              add_joker("j_threex_" .. jokerName, nil, false, false)
+              return true
+          end
+      }))
+  end,
+  unlocked = true,
+} 
+
+
+
+if CardSleeves then
+  CardSleeves.Sleeve {
+    key = "testDeckAgainAAAAAAAA",
+      prefix_config = {atlas=false},
+      atlas = "casl_sleeve_atlas",
+      pos = { x = 1, y = 3 },
+      loc_txt = {
+          name = "Orchid",
+          text = { "Orchid" }
+      },
+      apply = function(self)
+          G.E_MANAGER:add_event(Event({
+              func = function()
+                  add_joker("j_threex_orchid", nil, false, false)
+                  return true
+              end
+          }))
+      end,
+    unlocked = true,
+  }
+end
