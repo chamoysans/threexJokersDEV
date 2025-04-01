@@ -5,24 +5,24 @@ SMODS.Atlas({
 	py = 95
 })
 
-local jokerThing = SMODS.Joker{
-    name = "skinny", 
-    key = "j_threex_skinny", 
+local portly = SMODS.Joker{
+    name = "portly", 
+    key = "j_threex_portly", 
     config = {
       extra = {
-        multTTT = 2
+        number = 8
       }
     }, 
-    pos = {x = 3, y = 8},
+    pos = {x = 6, y = 7},
     loc_txt = {
-      name = "Skinny Joker", 
+      name = "Portly Joker", 
       text = {
         "{C:mult}+#1#{} Mult"
       }
     }, 
     rarity = 1, 
-    cost = 2, 
-    order = 25,
+    cost = 6, 
+    order = 26,
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 
@@ -30,18 +30,18 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, center)
       return {
         vars = {
-          center.ability.extra.multTTT
+          center.ability.extra.number
         }
       }
     end, 
     calculate = function(self, card, context)
       if context.joker_main then
-        return {
-          mult_mod = card.ability.extra.multTTT,
-          message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.multTTT } }
+        return {  
+          mult_mod = card.ability.extra.number,
+          message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.number } }
         }
       end
     end,
 }
 
-G.P_CENTERS["j_threex_skinny"] = jokerThing
+G.P_CENTERS["j_threex_portly"] = portly
