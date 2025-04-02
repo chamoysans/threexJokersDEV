@@ -6,23 +6,23 @@ SMODS.Atlas({
 })
 
 local jokerThing = SMODS.Joker{
-    name = "skinny", 
-    key = "j_threex_skinny", 
+    name = "isolation", 
+    key = "j_threex_isolation", 
     config = {
       extra = {
-        multTTT = 2
       }
     }, 
-    pos = {x = 3, y = 8},
+    pos = {x = 0, y = 5}, 
     loc_txt = {
-      name = "Skinny Joker", 
+      name = "Isolation", 
       text = {
-        "{C:mult}+#1#{} Mult"
+        "Jacks, Queens & Kings are",
+        "not considered {C:attention}Face Cards{}"
       }
     }, 
     rarity = 1, 
-    cost = 2, 
-    order = 27,
+    cost = 5, 
+    order = 14,
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 
@@ -30,18 +30,13 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, center)
       return {
         vars = {
-          center.ability.extra.multTTT
+          
         }
       }
     end, 
     calculate = function(self, card, context)
-      if context.joker_main then
-        return {
-          mult_mod = card.ability.extra.multTTT,
-          message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.multTTT } }
-        }
-      end
+      return {}
     end,
 }
 
-G.P_CENTERS["j_threex_skinny"] = jokerThing
+G.P_CENTERS["j_threex_isolation"] = jokerThing

@@ -1,24 +1,24 @@
-local jokerName = "blank"
+local jokerName = "money"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
     key = "j_threex_" .. jokerName, 
     config = {
       extra = {
+        money = 2
       }
     }, 
-    pos = {x = 6, y = 0}, 
+    pos = {x = 3, y = 6}, 
     loc_txt = {
-      name = "Blank Joker", 
+      name = "Money", 
       text = {
-        "{C:white}3.1415926535897926{}",
-        "Does Nothing...?", -- we do a little trolling
-        "{C:white}1.6180339887498948{}",
+        "{C:money}$1{} at end of round",
+        "per {C:attention}Gold Card{} in full deck,"
       }
     }, 
     rarity = 1, 
-    cost = 2, 
-    order = 14,
+    cost = 5, 
+    order = 76,
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 
@@ -26,12 +26,34 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, center)
       return {
         vars = {
-          
+          center.ability.extra.mult
         }
       }
     end, 
     calculate = function(self, card, context)
-      return true
+      if
+        context.cardarea == G.jokers and
+        context.joker_main
+      then
+        local thunk = 0
+
+        for i, card in ipairs(G.playing_cards) do
+          if card.ability.name == "Gold Card" then
+            thunk = thunk + 1
+          end
+        end
+
+        local totalMult = thunk * card.ability.extra.mult
+
+        return {
+          message = localize {
+            type = "variable",
+            key = "a_mult",
+            vars = { totalMult }
+          },
+          mult_mod = totalMult
+        }
+      end
     end,
 }
 
@@ -54,14 +76,11 @@ if testDecks then
         G.E_MANAGER:add_event(Event({
             func = function()
               for index = #G.playing_cards, 1, -1 do
-                local suit = "S_"
-                local rank = "7"
-
-                G.playing_cards[index]:set_base(G.P_CARDS[suit .. rank])
+                G.playing_cards[index]:set_ability(G.P_CENTERS.m_wild)
               end
 
               add_joker("j_threex_" .. jokerName, nil, false, false)
-                return true
+              return true
             end
         }))
     end,

@@ -22,7 +22,7 @@ local portly = SMODS.Joker{
     }, 
     rarity = 1, 
     cost = 6, 
-    order = 26,
+    order = 28,
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 

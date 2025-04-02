@@ -42,7 +42,7 @@ local jimmy = SMODS.Joker{
       then
         local thunk = 0
 
-        for i, card in ipairs(G.deck.cards) do
+        for i, card in ipairs(G.playing_cards) do
           if card.ability.name == "Default Base" then
             thunk = thunk + 1
           end

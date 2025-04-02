@@ -22,8 +22,8 @@ local jokerThing = SMODS.Joker{
       }
     }, 
     rarity = 1, 
-    cost = 2, 
-    order = 14,
+    cost = 7, 
+    order = 19,
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 
