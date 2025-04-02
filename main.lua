@@ -21,6 +21,7 @@ local common = {
     "loot",
     "sharpshooter",
     "blank",
+    "carto",
     "student",
     "fifth",
     "retriggerNum/firebrick",
@@ -35,17 +36,28 @@ local common = {
     "retriggerNum/orchid",
     "skinny",
     "portly",
+    "mayan",
+    "rotten",
+    "cash",
+    "isolation",
+    "love",
+    "celeb/lime",
+    "celeb/licorice",
+    "celeb/agent",
+    "celeb/actor",
 }
 
 
 SMODS.Atlas({
-	key = "a_threex_placeholder",
-	path = "placeholders.png",
-	px = 71,
-	py = 95
+    key = "a_threex_placeholder",
+    path = "placeholders.png",
+    px = 71,
+    py = 95
 })
 
 local directory = "jokers/" -- Change this to your actual directory path
+
+testDecks = true
 
 for _, filename in ipairs(common) do
     local filePath = directory .. "common/" .. filename .. ".lua"
@@ -53,7 +65,20 @@ for _, filename in ipairs(common) do
 
 end
 
-local testDecks = false
+function Card:is_face(from_boss)
+    if self.debuff and not from_boss then return end
+    local id = self:get_id()
+    if next(find_joker("Pareidolia")) then
+        return true
+    end
+    if id == 11 or id == 12 or id == 13 then
+        if next(find_joker("isolation")) then
+            return false
+        else
+            return true
+        end
+    end
+end
 
 if testDecks then
     SMODS.Back {
@@ -65,7 +90,7 @@ if testDecks then
             }
         },
         name = "studentDeck",
-        pos = {x = 0, y = 0},
+        pos = {x = 1, y = 2},
         apply = function(self)
             G.E_MANAGER:add_event(Event({
                 func = function()
@@ -87,7 +112,7 @@ if testDecks then
             }
         },
         name = "sharpDeck",
-        pos = {x = 0, y = 0},
+        pos = {x = 1, y = 2},
         apply = function(self)
             G.E_MANAGER:add_event(Event({
                 func = function()
@@ -114,7 +139,7 @@ if testDecks then
             }
         },
         name = "portlyDeck",
-        pos = {x = 0, y = 0},
+        pos = {x = 1, y = 2},
         apply = function(self)
             G.E_MANAGER:add_event(Event({
                 func = function()
@@ -136,7 +161,7 @@ if testDecks then
             }
         },
         name = "SkinnyDeck",
-        pos = {x = 0, y = 0},
+        pos = {x = 1, y = 2},
         apply = function(self)
             G.E_MANAGER:add_event(Event({
                 func = function()
@@ -158,7 +183,7 @@ if testDecks then
             }
         },
         name = "lootDeck",
-        pos = {x = 0, y = 0},
+        pos = {x = 1, y = 2},
         apply = function(self)
             G.E_MANAGER:add_event(Event({
                 func = function()
@@ -171,6 +196,8 @@ if testDecks then
         unlocked = true,
       } 
 
+      
+
       SMODS.Back {
         key = 'jimmyDeck',
         loc_txt = {
@@ -180,7 +207,7 @@ if testDecks then
             }
         },
         name = "Jimmy",
-        pos = {x = 0, y = 0},
+        pos = {x = 1, y = 2},
         apply = function(self)
             G.E_MANAGER:add_event(Event({
                 func = function()
@@ -202,12 +229,70 @@ if testDecks then
             }
         },
         name = "clownDeck",
-        pos = {x = 0, y = 0},
+        pos = {x = 1, y = 2},
         apply = function(self)
             G.E_MANAGER:add_event(Event({
                 func = function()
       
                     add_joker("j_threex_clowncar", nil, false, false)
+                    return true
+                end
+            }))
+        end,
+        unlocked = true,
+      } 
+
+      SMODS.Back {
+        key = 'isolationDeck',
+        loc_txt = {
+            name = "Isolation",
+            text = {
+                "AT"
+            }
+        },
+        name = "isolationDeck",
+        pos = {x = 1, y = 2},
+        apply = function(self)
+            G.E_MANAGER:add_event(Event({
+                func = function()
+
+                    for index = #G.playing_cards, 1, -1 do
+                        local suit = "S_"
+                        local rank = "J"
+    
+                        G.playing_cards[index]:set_base(G.P_CARDS[suit .. rank])
+                    end
+      
+                    add_joker("j_threex_isolation", "negative", false, false)
+                    add_joker("j_ride_the_bus", "negative", false, false)
+                    return true
+                end
+            }))
+        end,
+        unlocked = true,
+      } 
+
+      SMODS.Back {
+        key = 'limeDeck',
+        loc_txt = {
+            name = "Lime",
+            text = {
+                "AT"
+            }
+        },
+        name = "limeDeck",
+        pos = {x = 1, y = 2},
+        apply = function(self)
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    for index = #G.playing_cards, 1, -1 do
+                        local suit = "C_"
+                        local rank = "T"
+      
+                        G.playing_cards[index]:set_base(G.P_CARDS[suit .. rank])
+                    end
+      
+                    add_joker("j_threex_lime", nil, false, false)
                     return true
                 end
             }))
