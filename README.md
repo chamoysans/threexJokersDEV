@@ -2,4 +2,4 @@
 A Steamodded Balatro Mod that adds a whopping 300 Jokers!
 
 # Where to contact me
-Please DM me in discord, My handle is @taco78 (You can also see me on the discord thread)
+You can DM me in discord, My handle is @taco78 (You can also see me on the discord thread)
