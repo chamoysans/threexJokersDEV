@@ -11,7 +11,6 @@
 --         Discord: @taco78           --
 --                                    --
 ----------------------------------------
-
 local common = {
     "seenoevil",
     "speaknoevil",
@@ -21,6 +20,8 @@ local common = {
     "loot",
     "sharpshooter",
     "blank",
+    "easter",
+    "apple",
     "carto",
     "student",
     "fifth",
@@ -36,16 +37,33 @@ local common = {
     "retriggerNum/orchid",
     "skinny",
     "portly",
+    "surf",
     "mayan",
     "rotten",
+    -- "wingdings",(commented out due to VERY hard code, almost impossible)
     "cash",
+    "streamer",
     "isolation",
+    "whip",
+    "bread",
+    "saba",
+    "pure",
     "love",
+    "money",
+    "motivational",
+    "calendar",
     "celeb/lime",
     "celeb/licorice",
     "celeb/agent",
     "celeb/actor",
 }
+
+function findItemFromList(item, list)
+    for i, v in ipairs(list) do
+      if v == item then return i end
+    end
+    return nil -- Not found
+  end
 
 
 SMODS.Atlas({
