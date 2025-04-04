@@ -1,24 +1,25 @@
-local jokerName = "love"
+local jokerName = "motivational"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
     key = "j_threex_" .. jokerName, 
     config = {
       extra = {
-        mult = 2
+        triggered = false
       }
     }, 
-    pos = {x = 3, y = 6}, 
+    pos = {x = 0, y = 7}, 
     loc_txt = {
-      name = "Love", 
+      name = "Motivational Card", 
       text = {
-        "{C:mult}+#1#{} Mult per {C:attention}Wild Card{}",
-        "in full deck,"
+        "Create a random {C:green}Uncommon{}",
+        "Joker when a blind is beaten with", -- we do a little trolling
+        "0 {C:blue}hands{} and {C:mult}discards{} remaining,",
       }
     }, 
     rarity = 1, 
-    cost = 5, 
-    order = 76,
+    cost = 2, 
+    order = 87,
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 
@@ -26,33 +27,34 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, center)
       return {
         vars = {
-          center.ability.extra.mult
+          
         }
       }
     end, 
     calculate = function(self, card, context)
-      if
-        context.cardarea == G.jokers and
-        context.joker_main
-      then
-        local thunk = 0
 
-        for i, card in ipairs(G.playing_cards) do
-          if card.ability.name == "Wild Card" then
-            thunk = thunk + 1
+      if context.setting_blind then
+        card.ability.extra.triggered = false
+      end
+
+      if context.end_of_round and card.ability.set == 'Joker' then
+        if G.GAME.current_round.hands_left == 0 and G.GAME.current_round.discards_left == 0 then
+          if G.jokers and #G.jokers.cards < G.jokers.config.card_limit then
+            if not card.ability.extra.triggered then
+              if not card.blueprint then
+                card.ability.extra.triggered = true
+              end
+              local card = SMODS.create_card({ set = "Joker", area = G.jokers, rarity = 2, key_append = "threepointonefouronefiveninetwosixfivethreefiveeightninesevenninetwosix" })
+              card:add_to_deck()
+              G.jokers:emplace(card)
+              return {
+                message = '+1 Uncommon!',
+                colour = G.C.MULT,
+              }
+
+            end
           end
         end
-
-        local totalMult = thunk * card.ability.extra.mult
-
-        return {
-          message = localize {
-            type = "variable",
-            key = "a_mult",
-            vars = { totalMult }
-          },
-          mult_mod = totalMult
-        }
       end
     end,
 }
@@ -76,8 +78,6 @@ if testDecks then
         G.E_MANAGER:add_event(Event({
             func = function()
               for index = #G.playing_cards, 1, -1 do
-                G.playing_cards[index]:set_ability(G.P_CENTERS.m_wild)
-
                 local suit = "S_"
                 local rank = "7"
 
@@ -85,7 +85,7 @@ if testDecks then
               end
 
               add_joker("j_threex_" .. jokerName, nil, false, false)
-              return true
+                return true
             end
         }))
     end,

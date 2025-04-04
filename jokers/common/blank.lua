@@ -30,9 +30,8 @@ local jokerThing = SMODS.Joker{
         }
       }
     end, 
-    calculate = function(self, card, context)
-      return true
-    end,
+    --calculate = function(self, card, context)
+    --end,
 }
 
 G.P_CENTERS["j_threex_" .. jokerName] = jokerThing

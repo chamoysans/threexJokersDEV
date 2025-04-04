@@ -1,24 +1,27 @@
-local jokerName = "money"
+local jokerName = "pure"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
     key = "j_threex_" .. jokerName, 
     config = {
       extra = {
-        money = 1
+        gainMult = 10,
+        mult = 10
       }
     }, 
-    pos = {x = 9, y = 6}, 
+    yes_pool_flag = 'threex_saba_eaten',
+    pos = {x = 7, y = 7}, 
     loc_txt = {
-      name = "Money", 
+      name = "Pure Potassium", 
       text = {
-        "{C:money}$1{} at end of round",
-        "per {C:attention}2 Gold Cards{} in full deck,"
+        "{C:mult}+#1#{} Mult, Gains",
+        "{C:mult}+#2#{} Mult when a", -- we do a little trolling
+        "Small blind is defeated,"
       }
     }, 
     rarity = 1, 
-    cost = 5, 
-    order = 76,
+    cost = 2, 
+    order = 14,
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 
@@ -26,22 +29,25 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, center)
       return {
         vars = {
-          center.ability.extra.money
+          center.ability.extra.mult, center.ability.extra.gainMult
         }
       }
     end, 
-    calc_dollar_bonus = function(self, card)
-      local thunk = 0
-
-      for i, card in ipairs(G.playing_cards) do
-        if card.ability.name == "Gold Card" then
-          thunk = thunk + 1
-        end
+    calculate = function(self, card, context)
+      if context.cardarea == G.jokers and context.joker_main then
+        return {
+          message = localize{type='variable',key='a_mult',vars={card.ability.extra.mult}},
+          mult_mod = card.ability.extra.mult,
+          colour = G.C.MULT
+        }
       end
 
-      local totalMoney = math.floor(thunk * 0.5)
-
-      return totalMoney
+      if context.end_of_round and context.game_over == false and G.GAME.blind:get_type() == 'Small' then
+        card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.gainMult
+        return {
+          message = "+" .. card.ability.extra.gainMult .. " Mult!"
+        }
+      end
     end,
 }
 
@@ -64,8 +70,6 @@ if testDecks then
         G.E_MANAGER:add_event(Event({
             func = function()
               for index = #G.playing_cards, 1, -1 do
-                G.playing_cards[index]:set_ability(G.P_CENTERS.m_gold)
-
                 local suit = "S_"
                 local rank = "7"
 
@@ -73,7 +77,9 @@ if testDecks then
               end
 
               add_joker("j_threex_" .. jokerName, nil, false, false)
-              return true
+
+              add_joker("j_threex_bread", nil, false, false)
+                return true
             end
         }))
     end,

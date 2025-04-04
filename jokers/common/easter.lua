@@ -1,24 +1,23 @@
-local jokerName = "money"
+local jokerName = "easter"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
     key = "j_threex_" .. jokerName, 
     config = {
       extra = {
-        money = 1
       }
     }, 
-    pos = {x = 9, y = 6}, 
+    pos = {x = 2, y = 3}, 
     loc_txt = {
-      name = "Money", 
+      name = "Easter Eggs", 
       text = {
-        "{C:money}$1{} at end of round",
-        "per {C:attention}2 Gold Cards{} in full deck,"
+        "{C:mult}+2{} Mult for each ",
+        "unique joker you currently have,",
       }
     }, 
     rarity = 1, 
-    cost = 5, 
-    order = 76,
+    cost = 2, 
+    order = 14,
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 
@@ -26,22 +25,31 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, center)
       return {
         vars = {
-          center.ability.extra.money
+          
         }
       }
     end, 
-    calc_dollar_bonus = function(self, card)
-      local thunk = 0
+    calculate = function(self, card, context)
+      if context.cardarea == G.jokers and context.joker_main then
 
-      for i, card in ipairs(G.playing_cards) do
-        if card.ability.name == "Gold Card" then
-          thunk = thunk + 1
+        local unique = {
+
+        }
+
+        for k, v in pairs(G.jokers.cards) do
+          if not findItemFromList(v.ability.name, unique) then
+            unique[#unique + 1] =  v.ability.name
+          end
         end
+
+        local mult = #unique * 2
+
+        return {
+          message = localize{type='variable',key='a_mult',vars={mult}},
+          mult_mod = mult, 
+          colour = G.C.MULT
+        }
       end
-
-      local totalMoney = math.floor(thunk * 0.5)
-
-      return totalMoney
     end,
 }
 
@@ -57,6 +65,11 @@ if testDecks then
         }
     },
     config = {
+      vouchers = {
+        "v_overstock_norm",
+        "v_overstock_plus"
+      },
+      joker_slot = 999999
     },
     name = jokerName .. "Deck",
     pos = {x = 1, y = 2},
@@ -64,16 +77,17 @@ if testDecks then
         G.E_MANAGER:add_event(Event({
             func = function()
               for index = #G.playing_cards, 1, -1 do
-                G.playing_cards[index]:set_ability(G.P_CENTERS.m_gold)
-
                 local suit = "S_"
                 local rank = "7"
 
                 G.playing_cards[index]:set_base(G.P_CARDS[suit .. rank])
               end
 
+              ease_dollars(999999999999)
+
               add_joker("j_threex_" .. jokerName, nil, false, false)
-              return true
+              add_joker("j_ring_master", nil, false, false)
+                return true
             end
         }))
     end,

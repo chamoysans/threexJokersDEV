@@ -1,24 +1,26 @@
-local jokerName = "love"
+local jokerName = "streamer"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
     key = "j_threex_" .. jokerName, 
     config = {
       extra = {
-        mult = 2
+        mult = 1,
+        maxHands = 4,
+        blindSkipped = 0
       }
     }, 
-    pos = {x = 3, y = 6}, 
+    pos = {x = 7, y = 8}, 
     loc_txt = {
-      name = "Love", 
+      name = "Streamer", 
       text = {
-        "{C:mult}+#1#{} Mult per {C:attention}Wild Card{}",
-        "in full deck,"
+        "{C:mult}+#1#{} Mult per Played {C:blue}Hand,{}",
+        " Unused {C:mult}Discard,{} and Blind Skipped." -- look for throwback code
       }
     }, 
     rarity = 1, 
-    cost = 5, 
-    order = 76,
+    cost = 6, 
+    order = 60,
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 
@@ -31,28 +33,34 @@ local jokerThing = SMODS.Joker{
       }
     end, 
     calculate = function(self, card, context)
-      if
-        context.cardarea == G.jokers and
-        context.joker_main
-      then
-        local thunk = 0
+      if context.setting_blind then
+        card.ability.extra.maxHands = G.GAME.current_round.hands_left
+      end
 
-        for i, card in ipairs(G.playing_cards) do
-          if card.ability.name == "Wild Card" then
-            thunk = thunk + 1
-          end
+      if context.cardarea == G.jokers and context.joker_main then
+        local multCalc = 0
+
+        multCalc = card.ability.extra.maxHands - G.GAME.current_round.hands_left
+
+        print("3x LOG: MultCalc (Hands) = " .. multCalc)
+
+        multCalc = multCalc + G.GAME.current_round.discards_left
+
+        print("3x LOG: MultCalc (Hands then Discards) = " .. multCalc)
+
+        multCalc = multCalc + G.GAME.skips
+
+        print("3x LOG: MultCalc (Discards then Blinds) = " .. multCalc)
+
+        multCalc = multCalc * card.ability.extra.mult
+
+        if multCalc ~= 0 then
+          return {
+            message = localize{type='variable',key='a_mult',vars={multCalc}},
+            mult_mod = multCalc, 
+            colour = G.C.MULT
+          }
         end
-
-        local totalMult = thunk * card.ability.extra.mult
-
-        return {
-          message = localize {
-            type = "variable",
-            key = "a_mult",
-            vars = { totalMult }
-          },
-          mult_mod = totalMult
-        }
       end
     end,
 }
@@ -76,8 +84,6 @@ if testDecks then
         G.E_MANAGER:add_event(Event({
             func = function()
               for index = #G.playing_cards, 1, -1 do
-                G.playing_cards[index]:set_ability(G.P_CENTERS.m_wild)
-
                 local suit = "S_"
                 local rank = "7"
 
@@ -85,7 +91,7 @@ if testDecks then
               end
 
               add_joker("j_threex_" .. jokerName, nil, false, false)
-              return true
+                return true
             end
         }))
     end,

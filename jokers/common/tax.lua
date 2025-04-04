@@ -1,24 +1,26 @@
-local jokerName = "money"
+local jokerName = "tax"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
     key = "j_threex_" .. jokerName, 
     config = {
       extra = {
-        money = 1
+        moneyGoal = 30,
+        moneySpent = 0,
       }
     }, 
-    pos = {x = 9, y = 6}, 
+    pos = {x = 6, y = 0}, 
     loc_txt = {
-      name = "Money", 
+      name = "Tax Returns", 
       text = {
-        "{C:money}$1{} at end of round",
-        "per {C:attention}2 Gold Cards{} in full deck,"
+        "For every {C:money}$#1#{} spent,",
+        "recieve a Hermit Tarot Card",
+        "{C:inactive}Currently: $#2#{}",
       }
     }, 
     rarity = 1, 
-    cost = 5, 
-    order = 76,
+    cost = 2, 
+    order = 14,
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 
@@ -26,22 +28,12 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, center)
       return {
         vars = {
-          center.ability.extra.money
+          center.ability.extra.moneyGoal, center.ability.extra.moneySpent
         }
       }
     end, 
-    calc_dollar_bonus = function(self, card)
-      local thunk = 0
-
-      for i, card in ipairs(G.playing_cards) do
-        if card.ability.name == "Gold Card" then
-          thunk = thunk + 1
-        end
-      end
-
-      local totalMoney = math.floor(thunk * 0.5)
-
-      return totalMoney
+    calculate = function(self, card, context)
+      return true
     end,
 }
 
@@ -64,8 +56,6 @@ if testDecks then
         G.E_MANAGER:add_event(Event({
             func = function()
               for index = #G.playing_cards, 1, -1 do
-                G.playing_cards[index]:set_ability(G.P_CENTERS.m_gold)
-
                 local suit = "S_"
                 local rank = "7"
 
@@ -73,7 +63,7 @@ if testDecks then
               end
 
               add_joker("j_threex_" .. jokerName, nil, false, false)
-              return true
+                return true
             end
         }))
     end,
