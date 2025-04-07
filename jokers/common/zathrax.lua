@@ -8,7 +8,7 @@ local jokerThing = SMODS.Joker{
         hands = 3,
       }
     }, 
-    pos = {x = 6, y = 0}, 
+    pos = {x = 3, y = 10}, 
     loc_txt = {
       name = "Zathrax, the Hand God", 
       text = {

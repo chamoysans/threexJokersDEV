@@ -38,8 +38,9 @@ local sharp = SMODS.Joker{
     calculate = function(self, card, context)
       if context.individual and context.cardarea == G.play then
         local thunk = context.other_card
-        if thunk.ability.set == 'Enhanced' and thunk.ability.name ~= "Wild Card" then
+        if thunk.ability.set == 'Enhanced' and thunk.ability.name ~= "Wild" then
           return {
+            message = "+" .. card.ability.extra.mult .. " Mult!",
             mult_mod = card.ability.extra.mult,
             colour = G.C.MULT,
           }

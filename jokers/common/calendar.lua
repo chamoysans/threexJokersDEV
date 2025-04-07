@@ -47,84 +47,66 @@ local jokerThing = SMODS.Joker{
     }
   end, 
   calculate = function(self, card, context)
-    if context.cardarea == G.jokers then
-      -- Debug: Output Joker state at each calculation
-      print("Joker Calculate - currentMult: " .. card.ability.extra.currentMult)
-      print("Joker Calculate - rank: " .. card.ability.extra.rank)
-      print("Joker Calculate - suit: " .. card.ability.extra.suit)
-      
-      -- Handling the "before" context
-      if context.end_of_round and not context.blueprint then
+    if context.cardarea ~= G.jokers then return end
+
+    -- Debug: Joker state
+    print(string.format("Joker Calculate - Mult: %d, Rank: %s, Suit: %s", 
+        card.ability.extra.currentMult, tostring(card.ability.extra.rank), tostring(card.ability.extra.suit)))
+
+
+    if context.before and not context.blueprint and not context.blueprint_card then
         print("Before context triggered")
-        if (not context.blueprint) or (not context.blueprint_card) then
-          local gain = 0
-          for k, v in ipairs(context.scoring_hand) do
-            -- Debug: Check if suit and rank match
-            print("Checking card with rank: " .. v:get_id())
-            if v:is_suit(capitalize(card.ability.extra.suit), true) and v:get_id() == card.ability.extra.rank then
-              gain = gain + 1
+
+        local gain = 0
+        for k, v in ipairs(context.scoring_hand) do
+            print(string.format("Checking Card -> Rank: %s, Suit: %s", v:get_id(), tostring(v.base.suit)))
+
+            if v:is_suit(capitalize(card.ability.extra.suit)) and v:get_id() == card.ability.extra.rank then
+                gain = gain + 1
             end
-          end
-          local gainReal = gain * card.ability.extra.mult
-          print("Gain: " .. gain .. ", GainReal: " .. gainReal)
-          if gainReal ~= 0 then 
-            card.ability.extra.currentMult = card.ability.extra.currentMult + gainReal
+        end
+
+        print("Total Gain: " .. gain)
+
+        if gain > 0 then
+            card.ability.extra.currentMult = card.ability.extra.currentMult + gain
             print("New currentMult: " .. card.ability.extra.currentMult)
+
             return {
-              message = '+' .. tostring(gainReal) .. "!" ,
-              mult_mod = card.ability.extra.currentMult,
-              colour = G.C.MULT,
+                message = "+" .. tostring(gain) .. "!",
+                colour = G.C.MULT,
             }
-          end
         end
-      end
-      
-      if context.joker_main then
+    end
+
+    if context.joker_main and card.ability.extra.currentMult ~= 0 then
         return {
-          colour = G.C.MULT,
-          mult = card.ability.extra.currentMult
+            message = "+" .. card.ability.extra.currentMult .. " Mult!",
+            colour = G.C.MULT,
+            mult_mod = card.ability.extra.currentMult,
         }
-      end
-      
-      if context.setting_blind then
-        if true then -- Rank Incremention
-          print("Incrementing rank")
-          if card.ability.extra.rank == 14 then
-            card.ability.extra.rank = 2
-          else
-            card.ability.extra.rank = card.ability.extra.rank + 1
-          end
+    end
 
-          if (card.ability.extra.rank <= 14) and (card.ability.extra.rank >= 11) then
-            if card.ability.extra.rank == 11 then
-              card.ability.extra.rankDisp = "Jack"
-            elseif card.ability.extra.rank == 12 then
-              card.ability.extra.rankDisp = "Queen"
-            elseif card.ability.extra.rank == 13 then
-              card.ability.extra.rankDisp = "King"
-            elseif card.ability.extra.rank == 14 then
-              card.ability.extra.rankDisp = "Ace"
-            end
-          else
-            card.ability.extra.rankDisp = card.ability.extra.rank
-          end
-        end
+    -- SETTING BLIND Context (incrementing rank & suit)
+    if context.setting_blind then
+        -- Rank Increment
+        print("Incrementing rank")
+        card.ability.extra.rank = (card.ability.extra.rank == 14) and 2 or card.ability.extra.rank + 1
 
-        if true then -- Suit Incremention
-          local suits = { 'spades', 'hearts', 'diamonds', 'clubs' }
-          
-          -- Use findItemFromList to get the index, fallback to 1 if not found
-          local index = findItemFromList(card.ability.extra.suit, suits) or 1 
+        -- Update rank display
+        local rankNames = { [11] = "Jack", [12] = "Queen", [13] = "King", [14] = "Ace" }
+        card.ability.extra.rankDisp = rankNames[card.ability.extra.rank] or card.ability.extra.rank
 
-          print("Suit before increment: " .. card.ability.extra.suit)
-          if index == 4 then
-            card.ability.extra.suit = suits[1] -- Reset to spades after clubs
-          else
-            card.ability.extra.suit = suits[index + 1] -- Cycle to next suit
-          end
-          print("Suit after increment: " .. card.ability.extra.suit)
-        end
-      end
+        -- Suit Increment
+        local suits = { 'spades', 'hearts', 'diamonds', 'clubs' }
+        local index = findItemFromList(card.ability.extra.suit, suits) or 1
+
+        print("Suit before increment: " .. tostring(card.ability.extra.suit))
+
+        index = (index % #suits) + 1 -- Loop back after last suit
+        card.ability.extra.suit = suits[index]
+
+        print("Suit after increment: " .. tostring(card.ability.extra.suit))
     end
   end
 }

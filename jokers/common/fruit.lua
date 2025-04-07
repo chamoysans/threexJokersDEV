@@ -1,26 +1,27 @@
-local jokerName = "rotten"
+local jokerName = "fruit"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
     key = "j_threex_" .. jokerName, 
     config = {
       extra = {
-        sell = 5,
-        odds = 6
+        gainMult = 2,
+        current = 0,
+        lastHand = '',
+        currentHand = '',
       }
     }, 
-    pos = {x = 9, y = 7}, 
+    pos = {x = 3, y = 3}, 
     loc_txt = {
-      name = "Rotten Egg", 
+      name = "Fruit & Cheese Platter", 
       text = {
-        "Increase sell value by {C:money}$#1#{} each",
-        "round, {C:green}1 in #2#{} chance of setting",
-        "sell value to {C:money}0{}",
+        "Gain {C:mult}+#1#{} Mult if hand is",
+        "different from the last,", -- we do a little trolling
+        "{C:inactive}Currently: +#2# Mult{}",
       }
     }, 
     rarity = 1, 
-    cost = 4, 
-    order = 44,
+    cost = 2, 
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 
@@ -28,40 +29,30 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, center)
       return {
         vars = {
-          center.ability.extra.sell, center.ability.extra.odds
+          center.ability.extra.gainMult, center.ability.extra.current
         }
       }
     end, 
     calculate = function(self, card, context)
-      if (context.end_of_round) and (context.cardarea == G.jokers) and (not context.blueprint_card) and (card.ability.set == "Joker" and not card.debuff) then  
-        
-        local odds = {}
-        for i = 1, card.ability.extra.odds do
-          if i == card.ability.extra.odds then
-            odds[i] = true
-          else
-            odds[i] = false
-          end
-        end
+      if context.joker_main then
+        return {
+          message = "+" .. card.ability.extra.current .. " Mult!",
+          mult_mod = card.ability.extra.current,
+          colour = G.C.MULT
+        }
+      end
+      if context.before and not context.blueprint then
+        card.ability.extra.lastHand = card.ability.extra.currentHand
+        card.ability.extra.currentHand, _ = G.FUNCS.get_poker_hand_info(G.hand.highlighted)
 
-        local reset = pseudorandom_element(odds, pseudoseed('itstimeforthe'))
+        if card.ability.extra.lastHand == card.ability.extra.currentHand then
+          card.ability.extra.current = card.ability.extra.current + card.ability.extra.gainMult
 
-        if reset then
-          card.ability.extra_value = 0
-          card:set_cost()
           return {
-              message = "Reset!",
-              colour = G.C.MONEY
-          }
-        else
-          card.ability.extra_value = card.ability.extra_value + card.ability.extra.sell
-          card:set_cost()
-          return {
-              message = "+" .. tostring(card.ability.extra.sell) .. " Sell Value!",
-              colour = G.C.MONEY
+            message = "+" .. card.ability.extra.gainMult .. " Mult!",
+            colour = G.C.MULT
           }
         end
-
       end
     end,
 }
@@ -84,10 +75,9 @@ if testDecks then
     apply = function(self)
         G.E_MANAGER:add_event(Event({
             func = function()
-
               for index = #G.playing_cards, 1, -1 do
                 local suit = "S_"
-                local rank = "6"
+                local rank = "7"
 
                 G.playing_cards[index]:set_base(G.P_CARDS[suit .. rank])
               end

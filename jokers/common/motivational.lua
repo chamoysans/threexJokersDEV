@@ -44,7 +44,7 @@ local jokerThing = SMODS.Joker{
               if not card.blueprint then
                 card.ability.extra.triggered = true
               end
-              local card = SMODS.create_card({ set = "Joker", area = G.jokers, rarity = 2, key_append = "threepointonefouronefiveninetwosixfivethreefiveeightninesevenninetwosix" })
+              local card = SMODS.create_card({ set = "Joker", area = G.jokers, rarity = 0.83, key_append = "threepointonefouronefiveninetwosixfivethreefiveeightninesevenninetwosix" })
               card:add_to_deck()
               G.jokers:emplace(card)
               return {
