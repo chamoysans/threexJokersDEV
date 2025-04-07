@@ -10,7 +10,7 @@ local jokerThing = SMODS.Joker{
         consumables = 3
       }
     }, 
-    pos = {x = 6, y = 0}, 
+    pos = {x = 2, y = 2}, 
     loc_txt = {
       name = "Chance Card", 
       text = {
@@ -54,11 +54,11 @@ local jokerThing = SMODS.Joker{
           "Spectral",
         }
 
-        if Cryptid then
+        if SMODS.Mods['Cryptid'] then
           actualTypes[#actualTypes + 1] = "Code"
         end
 
-        if MoreFluff then
+        if SMODS.Mods['MoreFluff'] then
           actualTypes[#actualTypes + 1] = "Colour"
         end
 
