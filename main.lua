@@ -70,6 +70,22 @@ function findItemFromList(item, list)
     return nil -- Not found
   end
 
+local old = Card.add_to_deck
+
+function Card:add_to_deck(from_debuff)
+    old(self, from_debuff)
+
+    if not from_debuff then
+
+        if self.ability.set == 'Joker' then
+            if not from_debuff and G.jokers and #G.jokers.cards > 0 then
+                for i = 1, #G.jokers.cards do
+                    G.jokers.cards[i]:calculate_joker({threex_adding_unique_card = true, card = self})
+                end
+            end
+        end
+    end
+end
 
 SMODS.Atlas({
     key = "a_threex_placeholder",
