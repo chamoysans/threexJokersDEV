@@ -5,14 +5,17 @@ local jokerThing = SMODS.Joker{
     key = "j_threex_" .. jokerName, 
     config = {
       extra = {
+        mult = 1,
+        current = 0,
       }
     }, 
     pos = {x = 2, y = 3}, 
     loc_txt = {
       name = "Easter Eggs", 
       text = {
-        "{C:mult}+2{} Mult for each ",
-        "unique joker you currently have,",
+        "{C:mult}+#1#{} Mult for each ",
+        "unique joker purchased this run,",
+        "{C:inactive}Currently: +#2# Mult{}",
       }
     }, 
     rarity = 1, 
@@ -25,31 +28,23 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, center)
       return {
         vars = {
-          
+          center.ability.extra.mult, center.ability.extra.current
         }
       }
     end, 
     calculate = function(self, card, context)
       if context.cardarea == G.jokers and context.joker_main then
-
-        local unique = {
-
-        }
-
-        for k, v in pairs(G.jokers.cards) do
-          if not findItemFromList(v.ability.name, unique) then
-            unique[#unique + 1] =  v.ability.name
-          end
-        end
-
-        local mult = #unique * 2
-
         return {
-          message = localize{type='variable',key='a_mult',vars={mult}},
-          mult_mod = mult, 
+          message = localize{type='variable',key='a_mult',vars={card.ability.extra.current}},
+          mult_mod = card.ability.extra.current, 
           colour = G.C.MULT
         }
       end
+
+      if context.threex_adding_unique_card and not context.blueprint then
+        card.ability.extra.current = card.ability.extra.current + card.ability.extra.mult
+      end
+
     end,
 }
 
