@@ -6,7 +6,8 @@ local jokerThing = SMODS.Joker{
     config = {
       extra = {
         mult = 1,
-        maxHands = 4,
+        currentHands = 0,
+        currentDiscards = 0,
         blindSkipped = 0
       }
     }, 
@@ -15,7 +16,8 @@ local jokerThing = SMODS.Joker{
       name = "Streamer", 
       text = {
         "{C:mult}+#1#{} Mult per Played {C:blue}Hand,{}",
-        " Unused {C:mult}Discard,{} and Blind Skipped." -- look for throwback code
+        "Unused {C:mult}Discard,{} and Blind Skipped.",
+        "{C:inactive}Currently: #2#, #3#, and #4#{}"
       }
     }, 
     rarity = 1, 
@@ -28,31 +30,44 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, center)
       return {
         vars = {
-          center.ability.extra.mult
+          center.ability.extra.mult, center.ability.extra.currentHands, center.ability.extra.currentDiscards, G.GAME.skips
         }
       }
     end, 
     calculate = function(self, card, context)
-      if context.setting_blind then
-        card.ability.extra.maxHands = G.GAME.current_round.hands_left
+
+      if context.before then
+        card.ability.extra.currentHands = card.ability.extra.currentHands + card.ability.extra.mult
+        return {
+          message = "Upgrade!",
+          colour = G.C.MONEY
+        }
+      end
+
+      if context.end_of_round and
+        context.game_over == false and
+        not context.repetition then
+        card.ability.extra.currentDiscards = card.ability.extra.currentDiscards + (G.GAME.current_round.discards_left * card.ability.extra.mult)
+        return {
+          message = "Upgrade!",
+          colour = G.C.MONEY
+        }
       end
 
       if context.cardarea == G.jokers and context.joker_main then
         local multCalc = 0
 
-        multCalc = card.ability.extra.maxHands - G.GAME.current_round.hands_left
+        multCalc = card.ability.extra.currentHands
 
         print("3x LOG: MultCalc (Hands) = " .. multCalc)
 
-        multCalc = multCalc + G.GAME.current_round.discards_left
+        multCalc = multCalc + card.ability.extra.currentDiscards
 
         print("3x LOG: MultCalc (Hands then Discards) = " .. multCalc)
 
         multCalc = multCalc + G.GAME.skips
 
         print("3x LOG: MultCalc (Discards then Blinds) = " .. multCalc)
-
-        multCalc = multCalc * card.ability.extra.mult
 
         if multCalc ~= 0 then
           return {

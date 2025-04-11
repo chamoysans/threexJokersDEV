@@ -74,7 +74,7 @@ local jokerThing = SMODS.Joker{
     }, 
     yes_pool_flag = 'threex_cavendish_extinct',
     rarity = 1, 
-    cost = 2, 
+    cost = 7, 
     order = 71,
     unlocked = true, 
     discovered = true, 

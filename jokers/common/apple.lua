@@ -19,7 +19,7 @@ local jokerThing = SMODS.Joker{
       }
     }, 
     rarity = 1, 
-    cost = 2, 
+    cost = 5, 
     order = 17,
     unlocked = true, 
     discovered = true, 

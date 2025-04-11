@@ -1,24 +1,24 @@
-local jokerName = "zathrax"
+local jokerName = "tourist"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
     key = "j_threex_" .. jokerName, 
     config = {
       extra = {
-        hands = 3,
+        mult = 4,
+        chips = 30
       }
     }, 
-    pos = {x = 3, y = 10}, 
+    pos = {x = 6, y = 0}, 
     loc_txt = {
-      name = "Zathrax, the Hand God", 
+      name = "Tourist", 
       text = {
-        "When sold, gain {C:blue}#1#{} hands",
-        "and reshuffle the deck,",
+        "{C:chips}Bonus Cards{} give {C:mult}+#1#{} Mult,",
+        "{C:mult}Mult Cards{} give {C:chips}+#2#{} Chips",
       }
     }, 
     rarity = 1, 
-    cost = 7, 
-    order = 14,
+    cost = 2, 
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 
@@ -26,36 +26,29 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, center)
       return {
         vars = {
-          center.ability.extra.hands
+          center.ability.extra.mult, center.ability.extra.chips
         }
       }
     end, 
     calculate = function(self, card, context)
-      if context.selling_self and not context.retrigger_joker and not context.blueprint_card then
-        ease_hands_played(3, false)
-
-        delay(0.3)
-
-        G.FUNCS.draw_from_hand_to_discard()
-		    G.FUNCS.draw_from_discard_to_deck()
-        
-        for k, v in pairs(G.playing_cards) do
-          v.ability.wheel_flipped = nil
+      if not context.end_of_round and context.individual and context.cardarea == G.play then
+        if context.other_card.ability.effect == "Bonus Card" then
+          return {
+            message = "+" .. card.ability.extra.mult .. " Mult!",
+            mult_mod = card.ability.extra.mult,
+            colour = G.C.MULT,
+          }
         end
-        G.E_MANAGER:add_event(Event({
-          trigger = "immediate",
-          func = function()
-            local oldState = G.STATE
-            G.STATE = G.STATES.DRAW_TO_HAND
-            G.deck:shuffle("everydayamshuffling" .. G.GAME.round_resets.ante)
-            G.deck:hard_set_T()
-            G.STATE_COMPLETE = false
-            G.STATE = oldState
-            
-            return true
-          end,
-        }))
+  
+        if context.other_card.ability.effect == "Mult Card" then
+          return {
+            message = "+" .. card.ability.extra.chips .. " Chips!",
+            chip_mod = card.ability.extra.chips,
+            colour = G.C.CHIPS,
+          }
+        end
       end
+
     end,
 }
 
@@ -71,6 +64,10 @@ if testDecks then
         }
     },
     config = {
+      consumables = {
+        'c_heirophant',
+        'c_empress'
+      }
     },
     name = jokerName .. "Deck",
     pos = {x = 1, y = 2},
@@ -84,7 +81,7 @@ if testDecks then
                 G.playing_cards[index]:set_base(G.P_CARDS[suit .. rank])
               end
 
-              add_joker("j_threex_" .. jokerName, nil, false, false)
+              add_joker("j_threex_" .. jokerName, nil, false, false)  
                 return true
             end
         }))

@@ -1,26 +1,23 @@
-local jokerName = "easter"
+local jokerName = "construction"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
     key = "j_threex_" .. jokerName, 
     config = {
       extra = {
-        mult = 1,
-        current = 0,
+        mult = 7,
       }
     }, 
-    pos = {x = 2, y = 3}, 
+    pos = {x = 8, y = 2}, 
     loc_txt = {
-      name = "Easter Eggs", 
+      name = "Construction Joker", 
       text = {
-        "{C:mult}+#1#{} Mult for each ",
-        "unique joker purchased this run,",
-        "{C:inactive}Currently: +#2# Mult{}",
+        "{C:mult}+#1#{} Mult when a {C:attention}Stone{}",
+        "{C:attention}Card{} is Scored,"
       }
     }, 
     rarity = 1, 
     cost = 2, 
-    order = 14,
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 
@@ -28,23 +25,21 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, center)
       return {
         vars = {
-          center.ability.extra.mult, center.ability.extra.current
+          center.ability.extra.mult
         }
       }
     end, 
     calculate = function(self, card, context)
-      if context.cardarea == G.jokers and context.joker_main then
-        return {
-          message = localize{type='variable',key='a_mult',vars={card.ability.extra.current}},
-          mult_mod = card.ability.extra.current, 
-          colour = G.C.MULT
-        }
+      if context.individual and context.cardarea == G.play then
+        local thunk = context.other_card
+        if thunk.ability.set == 'Enhanced' and SMODS.has_enhancement(thunk, "m_stone")then
+          return {
+            message = "+" .. card.ability.extra.mult .. " Mult!",
+            mult_mod = card.ability.extra.mult,
+            colour = G.C.MULT,
+          }
+        end
       end
-
-      if context.threex_adding_unique_card and not context.blueprint then
-        card.ability.extra.current = card.ability.extra.current + card.ability.extra.mult
-      end
-
     end,
 }
 
@@ -60,11 +55,6 @@ if testDecks then
         }
     },
     config = {
-      vouchers = {
-        "v_overstock_norm",
-        "v_overstock_plus"
-      },
-      joker_slot = 999999
     },
     name = jokerName .. "Deck",
     pos = {x = 1, y = 2},
@@ -72,16 +62,10 @@ if testDecks then
         G.E_MANAGER:add_event(Event({
             func = function()
               for index = #G.playing_cards, 1, -1 do
-                local suit = "S_"
-                local rank = "7"
-
-                G.playing_cards[index]:set_base(G.P_CARDS[suit .. rank])
+                G.playing_cards[index]:set_ability(G.P_CENTERS.m_stone)
               end
 
-              ease_dollars(999999999999)
-
               add_joker("j_threex_" .. jokerName, nil, false, false)
-              add_joker("j_ring_master", nil, false, false)
                 return true
             end
         }))
