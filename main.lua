@@ -11,6 +11,7 @@
 --         Discord: @taco78           --
 --                                    --
 ----------------------------------------
+
 local common = {
     "seenoevil",
     "speaknoevil",
@@ -43,6 +44,8 @@ local common = {
     "rotten",
     -- "wingdings",(commented out due to VERY hard code, almost impossible)
     "max",
+    "tourist",
+    "construction",
     "cash",
     "streamer",
     "isolation",
@@ -68,7 +71,7 @@ function findItemFromList(item, list)
       if v == item then return i end
     end
     return nil -- Not found
-  end
+end
 
 local old = Card.add_to_deck
 
@@ -76,6 +79,10 @@ function Card:add_to_deck(from_debuff)
     old(self, from_debuff)
 
     if not from_debuff then
+        -- Log the entire card object to inspect its properties
+        sendDebugMessage(inspect(self), "the rizzler")
+        -- Or just log the 'set' property
+        sendDebugMessage('Card set property: ' .. self.label, "i aint skibidi")
 
         if self.ability.set == 'Joker' then
             if not from_debuff and G.jokers and #G.jokers.cards > 0 then
@@ -86,6 +93,7 @@ function Card:add_to_deck(from_debuff)
         end
     end
 end
+
 
 SMODS.Atlas({
     key = "a_threex_placeholder",
@@ -98,11 +106,15 @@ local directory = "jokers/" -- Change this to your actual directory path
 
 testDecks = true
 
+debugLog = true
+
 for _, filename in ipairs(common) do
     local filePath = directory .. "common/" .. filename .. ".lua"
     assert(SMODS.load_file(filePath))()
 
 end
+
+
 
 function Card:is_face(from_boss)
     if self.debuff and not from_boss then return end
