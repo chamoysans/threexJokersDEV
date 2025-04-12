@@ -5,4 +5,4 @@ A Steamodded Balatro Mod that adds a whopping 300 Jokers!
 You can DM me in discord, My handle is @taco78 (You can also see me on the discord thread)
 
 # Credits
-- @_VioMarks_ on Twitter for the glass.toml file
+- @_VioMarks_ on Twitter for reference for the glass.toml file
