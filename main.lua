@@ -43,6 +43,7 @@ local common = {
     "mayan",
     "rotten",
     -- "wingdings",(commented out due to VERY hard code, almost impossible)
+    "acrylic",
     "max",
     "tourist",
     "construction",
@@ -65,6 +66,18 @@ local common = {
     "celeb/agent",
     "celeb/actor",
 }
+
+function Card:get_chip_x_mult(context)
+    if self.debuff then return 0 end
+    if self.ability.set == 'Joker' then return 0 end
+    if self.ability.x_mult <= 1 then return 0 end
+    if self.ability.effect ~= "Glass Card" then return self.ability.x_mult end
+    if next(find_joker("acrylic")) then
+        return 1.5
+    end
+
+    return self.ability.x_mult
+end
 
 function findItemFromList(item, list)
     for i, v in ipairs(list) do
