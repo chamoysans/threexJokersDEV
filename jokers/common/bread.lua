@@ -69,7 +69,7 @@ local jokerThing = SMODS.Joker{
     loc_txt = {
       name = "Banana Bread", 
       text = {
-        "{C:mult}x#1#{} Mult,"
+        "{C:white,X:mult}x#1#{} Mult,"
       }
     }, 
     yes_pool_flag = 'threex_cavendish_extinct',

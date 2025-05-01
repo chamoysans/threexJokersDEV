@@ -12,7 +12,7 @@ local jokerThing = SMODS.Joker{
     loc_txt = {
       name = "Surf the Bottom", 
       text = {
-        "{C:mult}x#1#{} Mult if you have",
+        "{C:white,X:mult}X#1#{} Mult if you have",
         "less than {C:money}$#1#{}",
       }
     }, 

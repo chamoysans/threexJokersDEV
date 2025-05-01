@@ -1,4 +1,4 @@
-local jokerName = "blank"
+local jokerName = "mardi"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
@@ -7,17 +7,16 @@ local jokerThing = SMODS.Joker{
       extra = {
       }
     }, 
-    pos = {x = 6, y = 0}, 
+    pos = {x = 5, y = 6}, 
     loc_txt = {
-      name = "Blank Joker", 
+      name = "Mardi Gras Jester", 
       text = {
-        "{C:white}3.1415926535897926{}",
-        "Does Nothing...?", -- we do a little trolling
-        "{C:white}1.6180339887498948{}",
+        "{C:attention}Booster Packs{} always",
+        "contain 1 extra card,",
       }
     }, 
     rarity = 1, 
-    cost = 2, 
+    cost = 4, 
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 

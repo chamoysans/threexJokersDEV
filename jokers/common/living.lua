@@ -1,4 +1,4 @@
-local jokerName = "blank"
+local jokerName = "living"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
@@ -7,17 +7,16 @@ local jokerThing = SMODS.Joker{
       extra = {
       }
     }, 
-    pos = {x = 6, y = 0}, 
+    pos = {x = 1, y = 6}, 
     loc_txt = {
-      name = "Blank Joker", 
+      name = "Living Card", 
       text = {
-        "{C:white}3.1415926535897926{}",
-        "Does Nothing...?", -- we do a little trolling
-        "{C:white}1.6180339887498948{}",
+        "{C:green}#1# in 8{} chance for cards", 
+        "to be destroyed when scored,",
       }
     }, 
     rarity = 1, 
-    cost = 2, 
+    cost = 4, 
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 
@@ -25,12 +24,10 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, card)
       return {
         vars = {
-          
+          G.GAME.probabilities.normal
         }
       }
     end, 
-    --calculate = function(self, card, context)
-    --end,
 }
 
 G.P_CENTERS["j_threex_" .. jokerName] = jokerThing

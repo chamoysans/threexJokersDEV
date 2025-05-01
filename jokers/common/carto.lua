@@ -13,7 +13,7 @@ local jokerThing = SMODS.Joker{
     loc_txt = {
       name = "Cartographer Joker", 
       text = {
-        "{C:mult}x#1#{} if every visible hand",
+        "{C:white,X:mult}x#1#{} if every visible hand",
         "is level #2# or higher,"
       }
     }, 
@@ -38,10 +38,10 @@ local jokerThing = SMODS.Joker{
             actualLevel = 0,
             minLevel = 0
           }
-          for _, hand in ipairs(G.GAME.hands) do
-            if hand.visible then
-              thunk.actualLevel = thunk.actualLevel + hand.level
-              thunk.minLevel = thunk.minLevel + 2
+          for k, v in pairs(G.GAME.hands) do
+            if v.visible == true then
+              thunk.actualLevel = thunk.actualLevel + v.level
+              thunk.minLevel = thunk.minLevel + card.ability.extra.levels
             end
           end
   
@@ -52,7 +52,6 @@ local jokerThing = SMODS.Joker{
   
         if (think.actualLevel == think.minLevel) or (think.actualLevel > think.minLevel) then
           return {
-            delay = 0.2,
             colour = G.C.MULT,
             message = "x" .. card.ability.extra.Xmult .. " Mult!",
             Xmult_mod = card.ability.extra.Xmult

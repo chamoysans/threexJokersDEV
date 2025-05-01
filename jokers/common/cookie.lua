@@ -1,46 +1,43 @@
-local jokerName = "mana"
+local jokerName = "cookie"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
     key = "j_threex_" .. jokerName, 
     config = {
       extra = {
-        Xmult = 7,
-        odds = 250
+        chips = 20,
+        chip_mod = 20,
+        rounds = 6,
+        currentR = 0,
+        triggered = false,
       }
     }, 
-    pos = {x = 9, y = 4}, 
+    pos = {x = 9, y = 2}, 
     loc_txt = {
-      name = "Mana Banana", 
+      name = "Cookie Sandwich", 
       text = {
-        "{C:white,X:mult}x#1#{} Mult, {C:green}1 in #2#{}",
-        "Chance to be eaten",
+        "{C:chips}+#1#{} chips, additional {C:chips}+#2#{}",
+        "per round, Lasts #3# rounds,",
+        "{C:inactive}Currently: #4# rounds left,{}"
       }
     }, 
-    yes_pool_flag = 'cavendish_or_saba_extinct',
     rarity = 1, 
     cost = 2, 
-    order = 72,
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 
     atlas = "a_threex_sheet",
-    loc_vars = function(self, info_queue, center)
+    loc_vars = function(self, info_queue, card)
       return {
         vars = {
-          center.ability.extra.mult, center.ability.extra.odds,
+          card.ability.extra.chips, card.ability.extra.chip_mod, card.ability.extra.rounds, card.ability.extra.rounds - card.ability.extra.currentR
         }
       }
     end, 
     calculate = function(self, card, context)
-      if context.joker_main then
-        return {
-          message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.Xmult } },
-          Xmult_mod = card.ability.extra.Xmult
-        }
-      end
-      if context.end_of_round and context.game_over == false and not context.repetition and not context.blueprint then
-        if pseudorandom('manadabanana') < G.GAME.probabilities.normal / card.ability.extra.odds then
+      if context.end_of_round and not context.blueprint and not card.ability.extra.triggered then
+        card.ability.extra.triggered = true
+        if card.ability.extra.currentR + 1 == card.ability.extra.rounds then 
           G.E_MANAGER:add_event(Event({
             func = function()
               play_sound('tarot1')
@@ -48,28 +45,34 @@ local jokerThing = SMODS.Joker{
               card:juice_up(0.3, 0.4)
               card.states.drag.is = true
               card.children.center.pinch.x = true
-              G.E_MANAGER:add_event(Event({
-                trigger = 'after',
-                delay = 0.3,
-                blockable = false,
+              G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
                 func = function()
-                  G.jokers:remove_card(card)
+                  G.jokers:remove_card(self)
                   card:remove()
                   card = nil
-                  return true;
-                end
-              }))
+                return true; end})) 
               return true
             end
-          }))
+          })) 
           return {
-            message = 'Eaten!'
+              message = "Expired!",
+              colour = G.C.CHIPS
           }
         else
+          card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chip_mod
+          card.ability.extra.currentR = card.ability.extra.currentR + 1
           return {
-            message = 'Safe!'
+            message = "Upgrade?",
+            colour = G.C.CHIPS
           }
         end
+      elseif context.joker_main then
+        card.ability.extra.triggered = false
+        return {
+          message = "+" .. card.ability.extra.chips .. " Chips!",
+          colour = G.C.CHIPS,
+          chip_mod = card.ability.extra.chips
+        }
       end
     end,
 }
@@ -88,7 +91,8 @@ if testDecks then
     config = {
     },
     name = jokerName .. "Deck",
-    pos = {x = 1, y = 2},
+    atlas = 'a_threex_sheet',
+    pos = jokerThing.pos,
     apply = function(self)
         G.E_MANAGER:add_event(Event({
             func = function()

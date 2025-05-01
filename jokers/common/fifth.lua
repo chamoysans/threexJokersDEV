@@ -18,7 +18,7 @@ local jokerThing = SMODS.Joker{
     loc_txt = {
       name = "To the Fifth Dimension", 
       text = {
-        "{C:mult}x#1#{} Mult if hand",
+        "{C:white,X:mult}x#1#{} Mult if hand",
         "contains {C:attention}Five 5's{}"
       }
     }, 

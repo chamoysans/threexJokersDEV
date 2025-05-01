@@ -14,7 +14,7 @@ local jokerThing = SMODS.Joker{
     loc_txt = {
       name = "Mayan Calendar", 
       text = {
-        "{C:mult}x#1#{} Mult once #2# cards",
+        "{C:white,X:mult}x#1#{} Mult once #2# cards",
         "have been discarded.",
         "{C:inactive}Currently: #3# Cards{}"
       }
