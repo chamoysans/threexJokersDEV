@@ -7,7 +7,8 @@ local jokerThing = SMODS.Joker{
       extra = {
         rounds = 2,
         currentRound = 0,
-        consumables = 3
+        consumables = 3,
+        text = 'Rounds'
       }
     }, 
     pos = {x = 6, y = 0}, 
@@ -16,7 +17,7 @@ local jokerThing = SMODS.Joker{
       text = {
         "After #1# rounds, sell this card",
         "to gain #3# negative consumables,", -- we do a little trolling
-        "{C:inactive}Currently: #2# Round(s){}",
+        "{C:inactive}Currently: #2# #4#{}",
       }
     }, 
     rarity = 1, 
@@ -28,17 +29,21 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, center)
       return {
         vars = {
-          center.ability.extra.rounds, center.ability.extra.currentRound, center.ability.extra.consumables
+          center.ability.extra.rounds, center.ability.extra.currentRound, center.ability.extra.consumables,
+center.ability.extra.text
         }
       }
     end, 
     calculate = function(self, card, context)
       if context.end_of_round and context.cardarea == G.jokers and not context.blueprint then
         if card.ability.extra.currentRound == card.ability.extra.rounds - 1 and context.end_of_round then
+          card.ability.extra.currentRound = ''
+          card.ability.extra.text = 'Active!'
           return {
             message = "Active!"
           }
         elseif card.ability.extra.currentRound ~= card.ability.extra.rounds and context.end_of_round then
+          card.ability.extra.text = 'Round'
           card.ability.extra.currentRound = card.ability.extra.currentRound + 1
           return {
             message = tostring(card.ability.extra.rounds - card.ability.extra.currentRound) .. " Remaining"
@@ -47,20 +52,13 @@ local jokerThing = SMODS.Joker{
       end
     end,
     remove_from_deck = function(self, card, from_debuff)
-      if card.ability.extra.currentRound == card.ability.extra.rounds then
+      if card.ability.extra.currentRound == '' then
         local actualTypes = {
           "Tarot",
           "Planet",
           "Spectral",
         }
 
-        if Cryptid then
-          actualTypes[#actualTypes + 1] = "Code"
-        end
-
-        if MoreFluff then
-          actualTypes[#actualTypes + 1] = "Colour"
-        end
 
         local card_type = pseudorandom_element(actualTypes, pseudoseed('ThreeTimesMoreJokers'))
         local card_type2 = pseudorandom_element(actualTypes, pseudoseed('ThreeTimesLessJokers'))
