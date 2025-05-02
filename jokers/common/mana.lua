@@ -9,7 +9,7 @@ local jokerThing = SMODS.Joker{
         odds = 250
       }
     }, 
-    pos = {x = 9, y = 4}, 
+    pos = {x = 4, y = 6}, 
     loc_txt = {
       name = "Mana Banana", 
       text = {
@@ -28,7 +28,7 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, center)
       return {
         vars = {
-          center.ability.extra.mult, center.ability.extra.odds,
+          center.ability.extra.Xmult, center.ability.extra.odds,
         }
       }
     end, 
