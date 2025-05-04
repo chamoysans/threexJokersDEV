@@ -43,9 +43,10 @@ local jokerThing = SMODS.Joker{
       end
       if context.before and not context.blueprint then
         card.ability.extra.lastHand = card.ability.extra.currentHand
-        card.ability.extra.currentHand, _ = G.FUNCS.get_poker_hand_info(G.hand.highlighted)
+        local text,disp_text = G.FUNCS.get_poker_hand_info(G.hand.highlighted)
+        card.ability.extra.currentHand = text
 
-        if card.ability.extra.lastHand == card.ability.extra.currentHand then
+        if card.ability.extra.lastHand ~= card.ability.extra.currentHand then
           card.ability.extra.current = card.ability.extra.current + card.ability.extra.gainMult
 
           return {
