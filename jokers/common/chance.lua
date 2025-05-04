@@ -8,7 +8,8 @@ local jokerThing = SMODS.Joker{
         rounds = 2,
         currentRound = 0,
         consumables = 3,
-        text = 'Rounds'
+        text = 'Rounds',
+        active = false
       }
     }, 
     pos = {x = 6, y = 0}, 
@@ -39,6 +40,7 @@ center.ability.extra.text
         if card.ability.extra.currentRound == card.ability.extra.rounds - 1 and context.end_of_round then
           card.ability.extra.currentRound = ''
           card.ability.extra.text = 'Active!'
+          card.ability.extra.active = true
           return {
             message = "Active!"
           }
@@ -52,7 +54,7 @@ center.ability.extra.text
       end
     end,
     remove_from_deck = function(self, card, from_debuff)
-      if card.ability.extra.currentRound == '' then
+      if card.ability.extra.active then
         local actualTypes = {
           "Tarot",
           "Planet",
