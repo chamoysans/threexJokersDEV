@@ -12,7 +12,7 @@ local jokerThing = SMODS.Joker{
         active = false
       }
     }, 
-    pos = {x = 6, y = 0}, 
+    pos = {x = 2, y = 2}, 
     loc_txt = {
       name = "Chance Card", 
       text = {
