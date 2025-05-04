@@ -50,7 +50,7 @@ local jokerThing = SMODS.Joker{
           card.ability.extra.current = card.ability.extra.current + card.ability.extra.gainMult
 
           return {
-            message = "+" .. card.ability.extra.gainMult .. " Mult!",
+            message = "Upgrade!"
             colour = G.C.MULT
           }
         end
