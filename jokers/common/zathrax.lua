@@ -36,7 +36,7 @@ local jokerThing = SMODS.Joker{
 
         delay(0.3)
 
-        G.FUNCS.draw_from_hand_to_discard()
+       
 		    G.FUNCS.draw_from_discard_to_deck()
         
         for k, v in pairs(G.playing_cards) do
