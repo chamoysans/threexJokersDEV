@@ -62,7 +62,7 @@ local jokerThing = SMODS.Joker{
             print(string.format("Checking Card -> Rank: %s, Suit: %s", v:get_id(), tostring(v.base.suit)))
 
             if v:is_suit(capitalize(card.ability.extra.suit)) and v:get_id() == card.ability.extra.rank then
-                gain = gain + 1
+                gain = gain + card.ability.extra.mult
             end
         end
 
