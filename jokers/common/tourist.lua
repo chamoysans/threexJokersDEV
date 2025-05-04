@@ -9,7 +9,7 @@ local jokerThing = SMODS.Joker{
         chips = 30
       }
     }, 
-    pos = {x = 6, y = 0}, 
+    pos = {x = 7, y = 10}, 
     loc_txt = {
       name = "Tourist", 
       text = {
