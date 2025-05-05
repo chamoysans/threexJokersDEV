@@ -43,7 +43,7 @@ local common = {
     "chance",
     "mayan",
     "rotten",
-    -- "wingdings",(commented out due to VERY hard code, almost impossible)
+    "wingdings",
     "acrylic",
     "max",
     "tourist",
