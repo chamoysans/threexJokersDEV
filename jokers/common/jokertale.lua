@@ -1,59 +1,49 @@
-local jokerName = "fruit"
+local jokerName = "jokertale"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
     key = "j_threex_" .. jokerName, 
     config = {
       extra = {
-        gainMult = 2,
-        current = 0,
-        lastHand = '',
-        currentHand = '',
+        gain = 2,
+        current = 1,
+        activated = false
       }
     }, 
-    pos = {x = 3, y = 3}, 
+    pos = {x = 7, y = 5}, 
     loc_txt = {
-      name = "Fruit & Cheese Platter", 
+      name = "Jokertale", 
       text = {
-        "Gain {C:mult}+#1#{} Mult if hand is",
-        "different from the last,", -- we do a little trolling
-        "{C:inactive}Currently: +#2# Mult{}",
+        "This joker gains {X:mult,C:white}X#1#{} Mult",
+        "per boss blind beaten in 1 hand,", -- we do a little trolling
+        "{C:inactive}Currently: X#2#{}",
       }
     }, 
     rarity = 1, 
-    cost = 2, 
+    cost = 7, 
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 
     atlas = "a_threex_sheet",
-    loc_vars = function(self, info_queue, center)
+    loc_vars = function(self, info_queue, card)
       return {
         vars = {
-          center.ability.extra.gainMult, center.ability.extra.current
+          card.ability.extra.gain, card.ability.extra.current
         }
       }
     end, 
     calculate = function(self, card, context)
-      if context.joker_main then
+      if context.end_of_round and G.GAME.current_round.hands_played == 1 and G.GAME.blind.boss and not context.individual and not context.repetition and not context.blueprint_card and not context.retrigger_joker and not card.ability.extra.activated then
+        card.ability.extra.current = card.ability.extra.current + card.ability.extra.gain
+        card.ability.extra.activated = true
+        card_eval_status_text(card, "extra", nil, nil, nil, { message = "Upgrade!" })
+        return true
+      elseif context.joker_main and card.ability.extra.current ~= 1 then
+        card.ability.extra.activated = false
         return {
-          message = "+" .. card.ability.extra.current .. " Mult!",
-          mult_mod = card.ability.extra.current,
-          colour = G.C.MULT
+          colour = G.C.MULT,
+          x_mult = card.ability.extra.current
         }
-      end
-      if context.before and not context.blueprint then
-        card.ability.extra.lastHand = card.ability.extra.currentHand
-        local text,disp_text = G.FUNCS.get_poker_hand_info(G.hand.highlighted)
-        card.ability.extra.currentHand = text
-
-        if card.ability.extra.lastHand ~= card.ability.extra.currentHand then
-          card.ability.extra.current = card.ability.extra.current + card.ability.extra.gainMult
-
-          return {
-            message = "Upgrade!",
-            colour = G.C.MULT
-          }
-        end
       end
     end,
 }
@@ -72,7 +62,8 @@ if testDecks then
     config = {
     },
     name = jokerName .. "Deck",
-    pos = {x = 1, y = 2},
+    atlas = 'a_threex_sheet',
+    pos = jokerThing.pos,
     apply = function(self)
         G.E_MANAGER:add_event(Event({
             func = function()

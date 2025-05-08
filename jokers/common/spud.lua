@@ -1,35 +1,35 @@
-local jokerName = "wingdings"
+local jokerName = "spud"
 
 local jokerThing = SMODS.Joker{
-    name = jokerName,
-    key = "j_threex_" .. jokerName,
+    name = jokerName, 
+    key = "j_threex_" .. jokerName, 
     config = {
       extra = {
       }
-    },
-    pos = {x = 4, y = 10}, 
+    }, 
+    isSpud = true,
+    pos = {x = 0, y = 4}, 
     loc_txt = {
-      name = "Wingdings", 
+      name = "Spud", 
       text = {
-        "{C:attention}#1#s{} and {C:attention}#2#s{} count",
-        "as the same rank,", -- we do a little trolling
-        "rank changes each round"
+        "You can add card enhancements to this joker,",
       }
     }, 
     rarity = 1, 
-    cost = 2, 
-    order = 45,
+    cost = 4, 
     unlocked = true, 
     discovered = true, 
     blueprint_compat = true, 
     atlas = "a_threex_sheet",
-    loc_vars = function(self, info_queue, center)
+    loc_vars = function(self, info_queue, card)
       return {
         vars = {
-          G.GAME.current_round.threex_wing.rankOne, G.GAME.current_round.threex_wing.rankTwo
+          
         }
       }
-    end,
+    end, 
+    --calculate = function(self, card, context)
+    --end,
 }
 
 G.P_CENTERS["j_threex_" .. jokerName] = jokerThing
@@ -51,42 +51,18 @@ if testDecks then
     apply = function(self)
         G.E_MANAGER:add_event(Event({
             func = function()
-              local thunk = false
               for index = #G.playing_cards, 1, -1 do
                 local suit = "S_"
                 local rank = "7"
-                if thunk then
-                  rank = "8"
-                end
-
-                thunk = not thunk
 
                 G.playing_cards[index]:set_base(G.P_CARDS[suit .. rank])
               end
 
               add_joker("j_threex_" .. jokerName, nil, false, false)
-
-              add_joker("j_idol", nil, false, false)
                 return true
             end
         }))
     end,
     unlocked = true,
   }  
-end
-
-local calculate_joker_ref = Card.calculate_joker
-function Card.calculate_joker(self, context)
-
-  local joker = next(find_joker('wingdings'))
-
-  G.GAME.current_round.threex.wing.active = false
-
-  local ret = calculate_joker_ref(self, context)
-
-  if ret == nil and joker then
-    G.GAME.current_round.threex.wing.active = true
-    ret = calculate_joker_ref(self, context)
-  end
-  return ret
 end

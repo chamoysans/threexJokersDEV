@@ -1,23 +1,18 @@
-local jokerName = "fruit"
+local jokerName = "battery"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
     key = "j_threex_" .. jokerName, 
     config = {
       extra = {
-        gainMult = 2,
-        current = 0,
-        lastHand = '',
-        currentHand = '',
+        xmult = 1.5
       }
     }, 
-    pos = {x = 3, y = 3}, 
+    pos = {x = 1, y = 4}, 
     loc_txt = {
-      name = "Fruit & Cheese Platter", 
+      name = "Potato Battery", 
       text = {
-        "Gain {C:mult}+#1#{} Mult if hand is",
-        "different from the last,", -- we do a little trolling
-        "{C:inactive}Currently: +#2# Mult{}",
+        "{X:mult,C:white}X#1#{} Mult,",
       }
     }, 
     rarity = 1, 
@@ -26,34 +21,20 @@ local jokerThing = SMODS.Joker{
     discovered = true, 
     blueprint_compat = true, 
     atlas = "a_threex_sheet",
-    loc_vars = function(self, info_queue, center)
+    loc_vars = function(self, info_queue, card)
       return {
         vars = {
-          center.ability.extra.gainMult, center.ability.extra.current
+          card.ability.extra.xmult
         }
       }
     end, 
     calculate = function(self, card, context)
       if context.joker_main then
         return {
-          message = "+" .. card.ability.extra.current .. " Mult!",
-          mult_mod = card.ability.extra.current,
-          colour = G.C.MULT
+          message = "X1.5 Mult",
+          colour = G.C.MULT,
+          Xmult_mod = card.ability.extra.xmult
         }
-      end
-      if context.before and not context.blueprint then
-        card.ability.extra.lastHand = card.ability.extra.currentHand
-        local text,disp_text = G.FUNCS.get_poker_hand_info(G.hand.highlighted)
-        card.ability.extra.currentHand = text
-
-        if card.ability.extra.lastHand ~= card.ability.extra.currentHand then
-          card.ability.extra.current = card.ability.extra.current + card.ability.extra.gainMult
-
-          return {
-            message = "Upgrade!",
-            colour = G.C.MULT
-          }
-        end
       end
     end,
 }
@@ -72,7 +53,8 @@ if testDecks then
     config = {
     },
     name = jokerName .. "Deck",
-    pos = {x = 1, y = 2},
+    atlas = 'a_threex_sheet',
+    pos = jokerThing.pos,
     apply = function(self)
         G.E_MANAGER:add_event(Event({
             func = function()

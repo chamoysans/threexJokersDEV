@@ -34,9 +34,6 @@ local jokerThing = SMODS.Joker{
         }
       }
     end, 
-    calculate = function(self, card, context)
-      return {}
-    end,
 }
 
 G.P_CENTERS["j_threex_isolation"] = jokerThing
