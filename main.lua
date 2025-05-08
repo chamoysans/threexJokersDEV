@@ -40,6 +40,7 @@ local common = {
     "portly",
     "living",
     "surf",
+    "atom",
     "chance",
     "mayan",
     "rotten",
@@ -49,18 +50,23 @@ local common = {
     "tourist",
     "mardi",
     "construction",
+    -- "rewards", developer note: why the heck is this more harder than wingdings and spud
     "chess",
     "cookie",
     "cash",
     "streamer",
+    "spud",
+    "battery",
     "isolation",
     "whip",
     "bread",
     "saba",
     "pure",
     "mana",
+    "returns",
     "love",
     "money",
+    "jokertale",
     "fruit",
     "zathrax",
     "super",
@@ -71,6 +77,25 @@ local common = {
     "celeb/agent",
     "celeb/actor",
 }
+
+local function getNextKey(map, key)
+    local keys = {}
+    for k in pairs(map) do
+      table.insert(keys, k)
+    end
+    table.sort(keys)
+    local idx = index_of(keys, key)
+    if not idx then
+      return nil  -- well that was useless
+    end
+    local next_idx = (idx % #keys) + 1
+    local next_key = keys[next_idx]
+    return map[next_key]
+end
+
+function Card:gc() -- got this specific function from JenLib and i dont think i used this too much but not removing this justincase
+	return (self.config or {}).center or {}
+end
 
 function Card:get_chip_x_mult(context)
     if self.debuff then return 0 end
@@ -97,10 +122,6 @@ function Card:add_to_deck(from_debuff)
     old(self, from_debuff)
 
     if not from_debuff then
-        -- Log the entire card object to inspect its properties
-        sendDebugMessage(inspect(self), "the rizzler")
-        -- Or just log the 'set' property
-        sendDebugMessage('Card set property: ' .. self.label, "i aint skibidi")
 
         if self.ability.set == 'Joker' then
             if not from_debuff and G.jokers and #G.jokers.cards > 0 then
