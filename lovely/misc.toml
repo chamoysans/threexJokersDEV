@@ -99,9 +99,6 @@ target = "functions/common_events.lua"
 pattern = "function ease_dollars(mod, instant)"
 position = "after"
 payload = '''
-local hasReturns = next(find_joker("returns")) and true or false
-local hasRewards = next(find_joker("rewards")) and true or false
-print("SKIBIDIIIIIIIII: ", "mod=", mod, "hasReturns=", hasReturns, "hasRewards=", hasRewards)
 
 if G.jokers
    and #G.jokers.cards > 0
@@ -215,9 +212,6 @@ then
             card:add_to_deck()
             G.jokers:emplace(card)
             card:juice_up(0.3, 0.5)
-            if card.config.center.key == deleted_joker_key then
-                check_for_unlock({ type = "pr_unlock" })
-            end
             return true
         end,
     }))
