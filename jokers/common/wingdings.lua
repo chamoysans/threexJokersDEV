@@ -26,7 +26,7 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, center)
       return {
         vars = {
-          G.GAME.current_round.threex_wing.rankOne, G.GAME.current_round.threex_wing.rankTwo
+          G.GAME.current_round.threex.wing.rankOne, G.GAME.current_round.threex.wing.rankTwo
         }
       }
     end,
