@@ -110,6 +110,7 @@ pattern = "reset_idol_card()"
 position = "after"
 payload = '''
 reset_threex_wing_card()
+reset_threex_dumplings()
 '''
 match_indent = true
 
