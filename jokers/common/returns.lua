@@ -75,6 +75,8 @@ if testDecks then
                 G.playing_cards[index]:set_base(G.P_CARDS[suit .. rank])
               end
 
+              ease_dollars(99999999999999999999999999999)
+
               add_joker("j_threex_" .. jokerName, nil, false, false)
                 return true
             end
