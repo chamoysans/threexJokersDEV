@@ -2,7 +2,21 @@
 version = "1.0.0"
 priority = 0
 
-[vars]
+# ------- Mod Variables --------
+
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "current_round = {"
+position = "after"
+payload = '''
+threex = {
+    wing = {rankOne = 'Ace', rankTwo = 'King', active = false},
+    taxReturnsSpent = 0,
+    dumplings = {rank = 'Ace', id = 14}
+},
+'''
+match_indent = true
 
 [[patches]]
 [patches.pattern] # Wingdings
@@ -32,22 +46,30 @@ function reset_threex_wing_card()
     end
 end
 
+function reset_threex_dumplings()
+    G.GAME.current_round.threex.dumplings.rank = 'Ace'
+    G.GAME.current_round.threex.dumplings.id = 14
+
+    local valid_cards = {}
+
+    for k, v in ipairs(G.playing_cards) do
+        if v.ability.effect ~= 'Stone Card' then
+            if not SMODS.has_no_rank(v) then
+                valid_cards[#valid_cards+1] = v
+            end
+        end
+    end
+    if valid_cards[1] then 
+        local card = pseudorandom_element(valid_cards, pseudoseed('mail'..G.GAME.round_resets.ante))
+        G.GAME.current_round.threex.dumplings.rank = card.base.value
+        G.GAME.current_round.threex.dumplings.id = card.base.id
+    end
+end
+
 '''
 match_indent = true
 
-
-[[patches]]
-[patches.pattern] # Wingdings
-target = "game.lua"
-pattern = "current_round = {"
-position = "after"
-payload = '''
-threex = {
-    wing = {rankOne = 'Ace', rankTwo = 'King', active = false},
-    taxReturnsSpent = 0,
-},
-'''
-match_indent = true
+# ------- Wingdings --------
 
 [[patches]]
 [patches.pattern] # Wingdings
@@ -77,6 +99,7 @@ pattern = "reset_idol_card()"
 position = "after"
 payload = '''
 reset_threex_wing_card()
+reset_threex_dumplings()
 '''
 match_indent = true
 
@@ -99,7 +122,8 @@ target = "functions/common_events.lua"
 pattern = "function ease_dollars(mod, instant)"
 position = "after"
 payload = '''
-
+local hasReturns = next(find_joker('returns'))
+local hasRewards = next(find_joker('rewards'))
 if G.jokers
    and #G.jokers.cards > 0
    and mod <= 0
@@ -116,107 +140,16 @@ end
 '''
 match_indent = true
 
-# -------------- Spud --------------
+# --------- Misc -----------
 
 [[patches]]
-[patches.pattern]
+[patches.pattern] # Dumplings
 target = "card.lua"
-pattern = """
-if G.STATE == G.STATES.SELECTING_HAND or G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.PLANET_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED then
-"""
-position = "at"
+pattern = "return self.base.suit == suit"
+position = "before"
 payload = '''
-local enhancers = {
-    ["The Chariot"]         = true,
-    ["The Devil"]           = true,
-    ["The Empress"]         = true,
-    ["The Hierophant"]      = true,
-    ["Justice"]             = true,
-    ["The Lovers"]          = true,
-    ["The Magician"]        = true,
-    ["The Tower"]           = true,
-    ["The World"]           = true,
-}
-    
-if G.jokers.highlighted[1]
-and #G.jokers.highlighted == 1
-and G.jokers.highlighted[1]:gc().isSpud
-and enhancers[self.ability.name]
-then
+if self:get_id() == G.GAME.current_round.threex.dumplings.id then
     return true
-end    
-if G.STATE == G.STATES.SELECTING_HAND or G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.PLANET_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED then
-'''
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = "card.lua"
-pattern = """
-end    if self.ability.consumeable.mod_conv or self.ability.consumeable.suit_conv then
-"""
-position = "at"
-payload = '''
 end
-
-local enhancers = {
-    ["The Chariot"]         = true,
-    ["The Devil"]           = true,
-    ["The Empress"]         = true,
-    ["The Hierophant"]      = true,
-    ["Justice"]             = true,
-    ["The Lovers"]          = true,
-    ["The Magician"]        = true,
-    ["The Tower"]           = true,
-    ["The World"]           = true,
-}
-
-local spudTo = {
-    ["The Chariot"]    = "j_threex_battery",
-    ["The Devil"]      = "j_something_else",
-    ["The Empress"]    = "j_something_else",
-    ["The Hierophant"] = "j_something_else",
-    ["Justice"]        = "j_something_else",
-    ["The Lovers"]     = "j_something_else",
-    ["The Magician"]   = "j_something_else",
-    ["The Tower"]      = "j_something_else",
-    ["The World"]      = "j_something_else",
-}
-    
-if G.jokers.highlighted[1]
-  and #G.jokers.highlighted == 1
-  and G.jokers.highlighted[1]:gc().isSpud
-  and enhancers[self.ability.name]
-then
-    local percent = 0.85 + 0.001/(1 - 0.998)*0.3
-
-    -- look up the new joker key
-    local newKey = spudTo[self.ability.name]
-
-    G.E_MANAGER:add_event(Event({
-        trigger = "before",
-        delay = 0.75,
-        func = function()
-            G.jokers.highlighted[1]:start_dissolve(nil, _first_dissolve)
-            _first_dissolve = true
-            return true
-        end,
-    }))
-
-    G.E_MANAGER:add_event(Event({
-        trigger = "after",
-        delay = 0.4,
-        func = function()
-            play_sound("timpani")
-            local card = SMODS.create_card({set = 'Joker', area = G.jokers, key = newKey})
-            card:add_to_deck()
-            G.jokers:emplace(card)
-            card:juice_up(0.3, 0.5)
-            return true
-        end,
-    }))
-
-  delay(0.5)
-elseif self.ability.consumeable.mod_conv or self.ability.consumeable.suit_conv then
 '''
 match_indent = true
