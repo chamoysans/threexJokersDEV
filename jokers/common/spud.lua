@@ -58,6 +58,20 @@ if testDecks then
                 G.playing_cards[index]:set_base(G.P_CARDS[suit .. rank])
               end
 
+              SMODS.add_card({set = "Tarot", area = G.consumeables, key = 'c_chariot'})
+              SMODS.add_card({set = "Tarot", area = G.consumeables, key = 'c_devil'})
+              SMODS.add_card({set = "Tarot", area = G.consumeables, key = 'c_tower'})
+              SMODS.add_card({set = "Tarot", area = G.consumeables, key = 'c_justice'})
+              SMODS.add_card({set = "Tarot", area = G.consumeables, key = 'c_lovers'})
+              SMODS.add_card({set = "Tarot", area = G.consumeables, key = 'c_empress'})
+              SMODS.add_card({set = "Tarot", area = G.consumeables, key = 'c_magician'})
+
+              add_joker("j_threex_" .. jokerName, nil, false, false)
+              add_joker("j_threex_" .. jokerName, nil, false, false)
+              add_joker("j_threex_" .. jokerName, nil, false, false)
+              add_joker("j_threex_" .. jokerName, nil, false, false)
+              add_joker("j_threex_" .. jokerName, nil, false, false)
+              add_joker("j_threex_" .. jokerName, nil, false, false)
               add_joker("j_threex_" .. jokerName, nil, false, false)
                 return true
             end
