@@ -55,8 +55,15 @@ local common = {
     "cookie",
     "cash",
     "streamer",
-    "spud",
-    "battery",
+    "potatoes/spud",
+    "potatoes/battery",
+    "potatoes/fries",
+    "potatoes/skin",
+    "potatoes/chips",
+    "potatoes/eyes",
+    "potatoes/earthly",
+    "potatoes/glass",
+    "potatoes/dumplings",
     "isolation",
     "whip",
     "bread",
@@ -78,7 +85,44 @@ local common = {
     "celeb/actor",
 }
 
-local function getNextKey(map, key)
+SMODS.Atlas({
+    key = "a_threex_placeholder",
+    path = "placeholders.png",
+    px = 71,
+    py = 95
+})
+
+local directory = "jokers/" -- Change this to your actual directory path
+
+testDecks = true
+
+debugLog = true
+
+for _, filename in ipairs(common) do
+    local filePath = directory .. "common/" .. filename .. ".lua"
+    assert(SMODS.load_file(filePath))()
+
+end
+
+
+
+function Card:is_face(from_boss)
+    if self.debuff and not from_boss then return end
+    local id = self:get_id()
+    if next(find_joker("Pareidolia")) then
+        return true
+    end
+    if id == 11 or id == 12 or id == 13 then
+        if next(find_joker("isolation")) then
+            return false
+        else
+            return true
+        end
+    end
+end
+
+
+function getNextKey(map, key)
     local keys = {}
     for k in pairs(map) do
       table.insert(keys, k)
@@ -93,7 +137,7 @@ local function getNextKey(map, key)
     return map[next_key]
 end
 
-function Card:gc() -- got this specific function from JenLib and i dont think i used this too much but not removing this justincase
+function Card:gc()
 	return (self.config or {}).center or {}
 end
 
@@ -134,41 +178,6 @@ function Card:add_to_deck(from_debuff)
 end
 
 
-SMODS.Atlas({
-    key = "a_threex_placeholder",
-    path = "placeholders.png",
-    px = 71,
-    py = 95
-})
-
-local directory = "jokers/" -- Change this to your actual directory path
-
-testDecks = true
-
-debugLog = true
-
-for _, filename in ipairs(common) do
-    local filePath = directory .. "common/" .. filename .. ".lua"
-    assert(SMODS.load_file(filePath))()
-
-end
-
-
-
-function Card:is_face(from_boss)
-    if self.debuff and not from_boss then return end
-    local id = self:get_id()
-    if next(find_joker("Pareidolia")) then
-        return true
-    end
-    if id == 11 or id == 12 or id == 13 then
-        if next(find_joker("isolation")) then
-            return false
-        else
-            return true
-        end
-    end
-end
 
 if testDecks then
     SMODS.Back {
