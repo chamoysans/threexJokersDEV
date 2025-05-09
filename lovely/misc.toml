@@ -149,7 +149,7 @@ target = "card.lua"
 pattern = "return self.base.suit == suit"
 position = "before"
 payload = '''
-if self:get_id() == G.GAME.current_round.threex.dumplings.id then
+if self:get_id() == G.GAME.current_round.threex.dumplings.id and next(find_joker('dumplings')) then
     return true
 end
 '''
