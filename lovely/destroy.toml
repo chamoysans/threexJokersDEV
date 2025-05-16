@@ -72,7 +72,9 @@ for i,card in ipairs(scoring_hand or context.cardarea.cards) do
 	
 	-- TARGET: card destroyed
 
-	if ((destroyed) and ((not ((next(find_joker("acrylic"))) and (SMODS.has_enhancement(card, 'm_glass')))))) or (next(find_joker('living')) and pseudorandom('living') < G.GAME.probabilities.normal/8 and scoring_hand) then 
+	if ((destroyed) and ((not ((next(SMODS.find_card("j_threex_acrylic"))) and (SMODS.has_enhancement(card, 'm_glass'))))))
+	or (next(SMODS.find_card('j_threex_living')) and pseudorandom('living') < G.GAME.probabilities.normal/8 and scoring_hand)
+	or (next(SMODS.find_card('j_threex_atom')) and G.GAME.current_round.hands_played == 0 and context.full_hand and #context.full_hand == 1 and (not context.full_hand[1]:is_face()) and scoring_hand) then 
 		if SMODS.shatters(card) then
 			card.shattered = true
 		else 

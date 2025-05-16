@@ -11,7 +11,7 @@ pattern = "local _size = self.ability.extra"
 position = "at"
 payload = '''
 local extraCard = 0
-if next(find_joker("mardi")) then
+if next(SMODS.find_card("j_threex_mardi")) then
 	extraCard = 1
 end
 local _size = self.ability.extra + extraCard
