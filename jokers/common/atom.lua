@@ -2,7 +2,7 @@ local jokerName = "atom"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
-    key = "j_threex_" .. jokerName, 
+    key = jokerName, 
     config = {
       extra = {
       }
@@ -33,7 +33,7 @@ local jokerThing = SMODS.Joker{
       if G.GAME.current_round.hands_played == 0 
         and context.full_hand 
         and #context.full_hand == 1 
-        and context.after 
+        and context.before
         and (not context.full_hand[1]:is_face()) then
 
           G.playing_card = (G.playing_card and G.playing_card + 1) or 1

@@ -7,7 +7,7 @@ SMODS.Atlas({
 
 local hearnoevil = SMODS.Joker{
     name = "hearnoevil", 
-    key = "j_threex_hearnoevil", 
+    key = "hearnoevil", 
     config = {
       extra = {
         chips = 10,

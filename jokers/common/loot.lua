@@ -1,13 +1,6 @@
-SMODS.Atlas({
-	key = "a_threex_sheet",
-	path = "sheetCommon.png",
-	px = 71,
-	py = 95
-})
-
 local loot = SMODS.Joker{
     name = "loot", 
-    key = "j_threex_loot", 
+    key = "loot", 
     config = {
       extra = {
       }

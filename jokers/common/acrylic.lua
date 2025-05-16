@@ -2,7 +2,7 @@ local jokerName = "acrylic"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
-    key = "j_threex_" .. jokerName, 
+    key = jokerName, 
     config = {
       extra = {
         in_build = false
@@ -75,6 +75,8 @@ if testDecks then
                 G.playing_cards[index]:set_base(G.P_CARDS[suit .. rank])
                 G.playing_cards[index]:set_ability(G.P_CENTERS.m_glass)
               end
+
+              print('acrylic.lua TEST ' .. jokerThing.key)
 
               add_joker("j_threex_" .. jokerName, nil, false, false)
               add_joker("j_oops", nil, false, false)

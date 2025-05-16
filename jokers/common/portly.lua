@@ -1,13 +1,9 @@
-SMODS.Atlas({
-	key = "a_threex_sheet",
-	path = "sheetCommon.png",
-	px = 71,
-	py = 95
-})
+
+
 
 local portly = SMODS.Joker{
     name = "portly", 
-    key = "j_threex_portly", 
+    key = "portly", 
     config = {
       extra = {
         number = 8

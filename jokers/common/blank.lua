@@ -2,7 +2,7 @@ local jokerName = "blank"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
-    key = "j_threex_" .. jokerName, 
+    key = jokerName, 
     config = {
       extra = {
       }
@@ -12,7 +12,7 @@ local jokerThing = SMODS.Joker{
       name = "Blank Joker", 
       text = {
         "{C:white}3.1415926535897926{}",
-        "Does Nothing...?", -- we do a little trolling
+        "Does Nothing...?",
         "{C:white}1.6180339887498948{}",
       }
     }, 

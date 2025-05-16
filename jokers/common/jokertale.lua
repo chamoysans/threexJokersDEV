@@ -2,7 +2,7 @@ local jokerName = "jokertale"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
-    key = "j_threex_" .. jokerName, 
+    key = jokerName, 
     config = {
       extra = {
         gain = 2,

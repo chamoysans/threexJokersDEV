@@ -7,7 +7,7 @@ SMODS.Atlas({
 
 local jokerThing = SMODS.Joker{
     name = "fifth",
-    key = "j_threex_fifth", 
+    key = "fifth", 
     config = {
       extra = {
         Xmult = 5,

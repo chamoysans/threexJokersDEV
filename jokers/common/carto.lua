@@ -2,7 +2,7 @@ local jokerName = "carto"
 
 local jokerThing = SMODS.Joker{
     name = jokerName, 
-    key = "j_threex_" .. jokerName, 
+    key = jokerName, 
     config = {
       extra = {
         Xmult = 2,
@@ -32,7 +32,7 @@ local jokerThing = SMODS.Joker{
       }
     end, 
     calculate = function(self, card, context)
-      if context.cardarea == G.jokers and context.joker_main then -- where it crashed
+      if context.cardarea == G.jokers and context.joker_main then
         local function everyHandLevel()
           local thunk = {
             actualLevel = 0,

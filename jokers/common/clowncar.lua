@@ -7,7 +7,7 @@ SMODS.Atlas({
 
 local clowncar = SMODS.Joker{
     name = "clowncar", 
-    key = "j_threex_clowncar",  
+    key = "clowncar",  
     config = {
       extra = {
         chips = 15,
