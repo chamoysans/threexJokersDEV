@@ -46,6 +46,7 @@ local common = {
     "rotten",
     "wingdings",
     "acrylic",
+    "nametag",
     "max",
     "tourist",
     "mardi",
@@ -83,6 +84,7 @@ local common = {
     "celeb/licorice",
     "celeb/agent",
     "celeb/actor",
+    "serpent",
 }
 
 SMODS.Atlas({
@@ -104,53 +106,61 @@ for _, filename in ipairs(common) do
 
 end
 
-
+local oldIsFace = Card.is_face
 
 function Card:is_face(from_boss)
-    if self.debuff and not from_boss then return end
+
+    local ret = oldIsFace(self, from_boss)
     local id = self:get_id()
-    if next(find_joker("Pareidolia")) then
-        return true
-    end
+
     if id == 11 or id == 12 or id == 13 then
         if next(find_joker("isolation")) then
             return false
-        else
-            return true
         end
+        return ret
     end
+    return ret
 end
 
-
-function getNextKey(map, key)
-    local keys = {}
-    for k in pairs(map) do
-      table.insert(keys, k)
-    end
-    table.sort(keys)
-    local idx = index_of(keys, key)
-    if not idx then
-      return nil  -- well that was useless
-    end
-    local next_idx = (idx % #keys) + 1
-    local next_key = keys[next_idx]
-    return map[next_key]
-end
 
 function Card:gc()
 	return (self.config or {}).center or {}
 end
 
+local oldGetXMult = Card.get_chip_x_mult
+
 function Card:get_chip_x_mult(context)
-    if self.debuff then return 0 end
-    if self.ability.set == 'Joker' then return 0 end
-    if self.ability.x_mult <= 1 then return 0 end
-    if self.ability.effect ~= "Glass Card" then return self.ability.x_mult end
-    if next(find_joker("acrylic")) then
+
+    local ret = oldGetXMult(self, context)
+    
+
+    if next(SMODS.find_card('j_threex_acrylic')) and SMODS.has_enhancement(self, "m_glass") then
         return 1.5
     end
 
-    return self.ability.x_mult
+    return ret
+end
+
+local oldGetChipBonus = Card.get_chip_bonus
+
+function Card:get_chip_bonus()
+    local ret = oldGetChipBonus(self)
+
+    if next(SMODS.find_card('j_threex_nametag')) and self:is_face() then
+        return ret - self.base.nominal
+    end
+    return ret
+end
+
+local oldGetChipMult = Card.get_chip_mult
+
+function Card:get_chip_mult()
+    local ret = oldGetChipMult(self)
+
+    if next(SMODS.find_card('j_threex_nametag')) and self:is_face() then
+        return ret + 3
+    end
+    return ret
 end
 
 function findItemFromList(item, list)
