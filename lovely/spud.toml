@@ -1,0 +1,103 @@
+[manifest]
+version = "1.0.0"
+priority = 0
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = """
+if G.STATE == G.STATES.SELECTING_HAND or G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.PLANET_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED then
+"""
+position = "at"
+payload = '''
+local enhancers = {
+    ["The Chariot"]         = true,
+    ["The Devil"]           = true,
+    ["The Empress"]         = true,
+    ["The Hierophant"]      = true,
+    ["Justice"]             = true,
+    ["The Lovers"]          = true,
+    ["The Magician"]        = true,
+    ["The Tower"]           = true,
+}
+    
+if G.jokers.highlighted[1]
+and #G.jokers.highlighted == 1
+and G.jokers.highlighted[1]:gc().isSpud
+and enhancers[self.ability.name]
+then
+    return true
+end    
+if G.STATE == G.STATES.SELECTING_HAND or G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.PLANET_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED then
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = """
+end    if self.ability.consumeable.mod_conv or self.ability.consumeable.suit_conv then
+"""
+position = "at"
+payload = '''
+end
+
+local enhancers = {
+    ["The Chariot"]         = true,
+    ["The Devil"]           = true,
+    ["The Empress"]         = true,
+    ["The Hierophant"]      = true,
+    ["Justice"]             = true,
+    ["The Lovers"]          = true,
+    ["The Magician"]        = true,
+    ["The Tower"]           = true,
+}
+
+local spudTo = {
+    ["The Chariot"]    = "j_threex_battery",
+    ["The Devil"]      = "j_threex_fries",
+    ["The Empress"]    = "j_threex_skin",
+    ["The Hierophant"] = "j_threex_chips",
+    ["Justice"]        = "j_threex_glass",
+    ["The Lovers"]     = "j_threex_dumplings",
+    ["The Magician"]   = "j_threex_eyes",
+    ["The Tower"]      = "j_threex_earthly",
+}
+    
+if G.jokers.highlighted[1]
+  and #G.jokers.highlighted == 1
+  and G.jokers.highlighted[1]:gc().isSpud
+  and enhancers[self.ability.name]
+then
+    local percent = 0.85 + 0.001/(1 - 0.998)*0.3
+
+    -- look up the new joker key
+    local newKey = spudTo[self.ability.name]
+
+    G.E_MANAGER:add_event(Event({
+        trigger = "before",
+        delay = 0.75,
+        func = function()
+            G.jokers.highlighted[1]:start_dissolve(nil, _first_dissolve)
+            _first_dissolve = true
+            return true
+        end,
+    }))
+
+    G.E_MANAGER:add_event(Event({
+        trigger = "after",
+        delay = 0.4,
+        func = function()
+            play_sound("timpani")
+            local card = SMODS.create_card({set = 'Joker', area = G.jokers, key = newKey})
+            card:add_to_deck()
+            G.jokers:emplace(card)
+            card:juice_up(0.3, 0.5)
+            return true
+        end,
+    }))
+
+  delay(0.5)
+elseif self.ability.consumeable.mod_conv or self.ability.consumeable.suit_conv then
+'''
+match_indent = true

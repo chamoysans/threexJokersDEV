@@ -1,0 +1,113 @@
+[manifest]
+version = "1.0.0"
+priority = 0
+
+# ------- Wingdings --------
+
+[[patches]]
+[patches.pattern] # Wingdings
+target = "card.lua"
+pattern = "return self.base.id"
+position = "at"
+payload = '''
+if G.GAME.current_round.threex.wing.active then
+	if self.base.id == G.GAME.current_round.threex.wing.rankOne_id then
+		return G.GAME.current_round.threex.wing.rankTwo_id
+
+	elseif self.base.id == G.GAME.current_round.threex.wing.rankTwo_id then
+		return G.GAME.current_round.threex.wing.rankOne_id
+
+	else
+		return self.base.id
+	end
+end
+return self.base.id
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern] # Wingdings
+target = "game.lua"
+pattern = "reset_idol_card()"
+position = "after"
+payload = '''
+reset_threex_wing_card()
+reset_threex_dumplings()
+reset_threex_passport_card()
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern] # Wingdings
+target = "functions/state_events.lua"
+pattern = "reset_idol_card()"
+position = "after"
+payload = '''
+reset_threex_wing_card()
+reset_threex_dumplings()
+reset_threex_passport_card()
+'''
+match_indent = true
+
+
+# ----- Balatro Rewards Program -----
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = "function ease_dollars(mod, instant)"
+position = "after"
+payload = '''
+local hasReturns = next(SMODS.find_card('j_threex_returns'))
+local hasRewards = next(SMODS.find_card('j_threex_rewards'))
+if G.jokers
+   and #G.jokers.cards > 0
+   and mod <= 0
+   and (hasReturns or hasRewards)
+then
+    if next(SMODS.find_card('j_threex_returns')) then
+        G.GAME.current_round.threex.taxReturnsSpent = G.GAME.current_round.threex.taxReturnsSpent + math.abs(mod)
+    end
+    for i = 1, #G.jokers.cards do
+        G.jokers.cards[i]:calculate_joker({threex_purchase = true, card = self})
+    end
+end
+
+'''
+match_indent = true
+
+# --------- Misc -----------
+
+[[patches]]
+[patches.pattern] # Dumplings
+target = "card.lua"
+pattern = "return self.base.suit == suit"
+position = "before"
+payload = '''
+if self:get_id() == G.GAME.current_round.threex.dumplings.id and next(SMODS.find_card('j_threex_dumplings')) then
+    return true
+end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern] # J. Serpent and J. Needle
+target = "functions/state_events.lua"
+pattern = """
+if G.GAME.blind.name == 'The Serpent' and
+        not G.GAME.blind.disabled and
+        (G.GAME.current_round.hands_played > 0 or
+        G.GAME.current_round.discards_used > 0) then
+"""
+position = "at"
+payload = '''
+if next(SMODS.find_card('j_threex_needle')) then
+    hand_space = 1
+end
+if ((G.GAME.blind.name == 'The Serpent' and not G.GAME.blind.disabled)
+    or (next(SMODS.find_card('j_threex_serpent')))
+    ) and 
+        (G.GAME.current_round.hands_played > 0 or
+        G.GAME.current_round.discards_used > 0) then
+'''
+match_indent = true

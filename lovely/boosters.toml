@@ -1,0 +1,22 @@
+[manifest]
+version = "1.0.0"
+priority = 0
+
+[vars]
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "local _size = self.ability.extra"
+position = "at"
+payload = '''
+local extraCard = 0
+if next(SMODS.find_card("j_threex_mardi")) then
+	extraCard = 1
+end
+local _size = self.ability.extra + extraCard
+local cardV = math.random(_size)
+local cardC = math.random(_size)
+local cardS = math.random(_size)
+'''
+match_indent = true

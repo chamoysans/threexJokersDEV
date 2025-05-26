@@ -1,0 +1,11 @@
+{
+	"id": "ModThreeTimesJokers",
+	"name": "x3 Jokers",
+	"display_name": "x3 Jokers",
+	"author": ["@taco78", "IPreferCheddar"],
+	"description": "A mod that adds a whopping 300 Jokers! (WIP)",
+	"prefix": "threex",
+	"main_file": "main.lua",
+	"badge_colour": "004F9B",
+	"version": "0.0.1"
+}

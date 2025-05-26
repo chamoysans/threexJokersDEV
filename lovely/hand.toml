@@ -1,0 +1,52 @@
+[manifest]
+version = "1.0.0"
+priority = 0
+
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "G.hand.highlighted[i].ability.played_this_ante = true"
+position = "at"
+payload = '''
+-- Removed by hand.toml in 3xJ Mod ( LOOK AT THE TOML FILE FOR NOTES)
+'''
+match_indent = true
+
+# For those who are wondering:
+# THIS DOES NOT BREAK THE PILLAR,
+# This simply relocates where the played_this_ante
+# is, it is simply in destroy.toml,
+# Should be commented, Just CTRL+F then search for:
+# "[PILLARFUNCTIONALITY]",
+# Yes, just do that, Don't include the quotes.
+
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "if G.GAME.blind:press_play() then"
+position = "before"
+payload = '''
+if next(SMODS.find_card('j_threex_hook')) then
+    for i = 1, #G.jokers.cards do
+        G.jokers.cards[i]:calculate_joker({threex_before_before = true, card = self})
+    end
+end
+'''
+match_indent = true
+
+
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''
+G.GAME.hands[text].played = G.GAME.hands[text].played + 1
+    G.GAME.hands[text].played_this_round = G.GAME.hands[text].played_this_round + 1
+'''
+position = "at"
+payload = '''
+if not next(SMODS.find_card('j_threex_incognito')) then
+    G.GAME.hands[text].played = G.GAME.hands[text].played + 1
+    G.GAME.hands[text].played_this_round = G.GAME.hands[text].played_this_round + 1
+end
+'''
+match_indent = true

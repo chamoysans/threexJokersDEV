@@ -1,0 +1,77 @@
+[manifest]
+version = "1.0.0"
+priority = 0
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "current_round = {"
+position = "after"
+payload = '''
+threex = {
+    wing = {rankOne = 'Ace', rankTwo = 'King', active = false},
+    taxReturnsSpent = 0,
+    dumplings = {rank = 'Ace', id = 14},
+    passport = {suit = 'Spades'}
+},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern] # Wingdings
+target = "functions/common_events.lua"
+pattern = "function reset_idol_card()"
+position = "before"
+payload = '''
+function reset_threex_wing_card()
+	G.GAME.current_round.threex.wing.rankOne = 'Ace'
+	G.GAME.current_round.threex.wing.rankTwo = 'King'
+	local valid_cards = {}
+    for k, v in ipairs(G.playing_cards) do
+        if v.ability.effect ~= 'Stone Card' then
+            valid_cards[#valid_cards+1] = v
+        end
+    end
+	if valid_cards[2] then 
+        local first_card = pseudorandom_element(valid_cards, pseudoseed('wing'..G.GAME.round_resets.ante))
+
+        G.GAME.current_round.threex.wing.rankOne = first_card.base.value
+        G.GAME.current_round.threex.wing.rankOne_id = first_card.base.id
+
+		local next_card = pseudorandom_element(valid_cards, pseudoseed('dings'.. G.GAME.round_resets.ante .. "okayTOREALLYREMOVETHEseededALLEGATIONSIWILLNOWBEPUTTINGTHISINTHISSPECIFICAREAANDTHEREWERENEVERANYseededALLEGATIONSANYWAYIJUSTWANTEDITTONEVEREVERGETTHESAMEIDASTHEOTHERONE"))
+
+        G.GAME.current_round.threex.wing.rankTwo = next_card.base.value
+        G.GAME.current_round.threex.wing.rankTwo_id = next_card.base.id
+    end
+end
+
+function reset_threex_passport_card()
+    local passport_suits = {}
+    for k, v in ipairs({'Spades','Hearts','Clubs','Diamonds'}) do
+        if v ~= G.GAME.current_round.threex.passport.suit then passport_suits[#passport_suits + 1] = v end
+    end
+    local passport_card = pseudorandom_element(passport_suits, pseudoseed('passport'..G.GAME.round_resets.ante))
+    G.GAME.current_round.threex.passport.suit = passport_card
+end
+
+function reset_threex_dumplings()
+    G.GAME.current_round.threex.dumplings.rank = 'Ace'
+    G.GAME.current_round.threex.dumplings.id = 14
+
+    local valid_cards = {}
+
+    for k, v in ipairs(G.playing_cards) do
+        if v.ability.effect ~= 'Stone Card' then
+            if not SMODS.has_no_rank(v) then
+                valid_cards[#valid_cards+1] = v
+            end
+        end
+    end
+    if valid_cards[1] then 
+        local card = pseudorandom_element(valid_cards, pseudoseed('mail'..G.GAME.round_resets.ante))
+        G.GAME.current_round.threex.dumplings.rank = card.base.value
+        G.GAME.current_round.threex.dumplings.id = card.base.id
+    end
+end
+
+'''
+match_indent = true

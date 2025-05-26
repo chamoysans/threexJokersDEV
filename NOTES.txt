@@ -1,0 +1,7 @@
+NOTES FOR THE DEVELOPER (me)
+
+For incognito Joker:
+- functions/state_events.lua, line 571 (G.FUNCS.evaluate_play = function(e))
+
+For Coloring sheet:
+- functions/state_events.lua, line 640 (mult = mod_mult(G.GAME.hands[text].mult))
