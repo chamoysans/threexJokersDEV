@@ -99,7 +99,7 @@ local jokerThing = SMODS.Joker{
 
         -- Suit Increment
         local suits = { 'spades', 'hearts', 'diamonds', 'clubs' }
-        local index = findItemFromList(card.ability.extra.suit, suits) or 1
+        local index = TXJ.findItemFromList(card.ability.extra.suit, suits) or 1
 
         print("Suit before increment: " .. tostring(card.ability.extra.suit))
 

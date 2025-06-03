@@ -26,7 +26,7 @@ local jokerThing = SMODS.Joker{
     loc_vars = function(self, info_queue, card)
       return {
         vars = {
-          card.ability.extra.cardLost, (G.hand.config.card_limit - #G.hand.cards) * card.ability.extra.cardLost
+          card.ability.extra.cardLost, ( G.hand and ((G.hand.config.card_limit - #G.hand.cards) * card.ability.extra.cardLost) or 0)
         }
       }
     end, 

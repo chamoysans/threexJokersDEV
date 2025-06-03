@@ -3,7 +3,7 @@ local jokerName = "dumplings"
 local jokerThing = SMODS.Joker{
     name = jokerName, 
     yes_pool_flag = 'notShowingOnShopAnymore',
-    key = "j_threex_" .. jokerName, 
+    key = "" .. jokerName, 
     config = {
       extra = {
       }
@@ -13,7 +13,7 @@ local jokerThing = SMODS.Joker{
     loc_txt = {
       name = "Potato Dumplings", 
       text = {
-        "#1#s are considered Wild cards,",
+        "#1#s are considered {C:attention}Wild cards,{}",
         "Rank changes every round",
       }
     }, 

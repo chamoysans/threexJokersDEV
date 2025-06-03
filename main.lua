@@ -12,7 +12,9 @@
 --                                    --
 ----------------------------------------
 
+
 local common = {
+    "astral",
     "seenoevil",
     "speaknoevil",
     "hearnoevil",
@@ -100,7 +102,9 @@ SMODS.Atlas({
     py = 95
 })
 
-local directory = "jokers/" -- Change this to your actual directory path
+assert(SMODS.load_file("utils.lua"))()
+
+local directory = "jokers/"
 
 testDecks = true
 
@@ -126,11 +130,6 @@ function Card:is_face(from_boss)
         return ret
     end
     return ret
-end
-
-
-function Card:gc()
-	return (self.config or {}).center or {}
 end
 
 local oldGetXMult = Card.get_chip_x_mult
@@ -167,13 +166,6 @@ function Card:get_chip_mult()
         return ret + 3
     end
     return ret
-end
-
-function findItemFromList(item, list)
-    for i, v in ipairs(list) do
-      if v == item then return i end
-    end
-    return nil -- Not found
 end
 
 local old = Card.add_to_deck
