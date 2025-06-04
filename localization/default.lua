@@ -5,7 +5,7 @@ return {
                 name = "No Art",
                 text = {
                     "This Joker's art will",
-                    "be replaced later."",
+                    "be replaced later.",
                 },
             },
         },  
