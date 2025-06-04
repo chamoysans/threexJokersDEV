@@ -42,7 +42,6 @@ local jokerThing = SMODS.Joker{
       }
     end, 
     calculate = function(self, card, context)
-        print("Context Check:", context.cardarea == G.hand, context.individual, context.end_of_round)
     
         if not context.end_of_round and context.individual and context.cardarea == G.hand then
             

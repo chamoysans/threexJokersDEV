@@ -93,6 +93,10 @@ local common = {
     "pillar",
     "needle",
     "incognito",
+    "big-spade",
+    "big-club",
+    "big-heart",
+    "big-diamond",
 }
 
 SMODS.Atlas({
