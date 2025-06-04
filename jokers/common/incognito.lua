@@ -22,6 +22,7 @@ local jokerThing = SMODS.Joker{
     blueprint_compat = false, -- CHANGE THISSSSSSSSSSSSSSSSSSSS
     atlas = "a_threex_sheet",
     loc_vars = function(self, info_queue, card)
+      info_queue[#info_queue+1] = {key = 'threex_noart', set = 'Other',}
       return {
         vars = {
           

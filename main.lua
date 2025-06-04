@@ -93,6 +93,7 @@ local common = {
     "pillar",
     "needle",
     "incognito",
+    "red-joker",
     "big-spade",
     "big-club",
     "big-heart",

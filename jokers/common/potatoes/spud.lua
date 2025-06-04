@@ -12,7 +12,8 @@ local jokerThing = SMODS.Joker{
     loc_txt = {
       name = "Spud", 
       text = {
-        "You can add card enhancements to this joker,",
+        "You can add card some card",
+        "enhancements to this joker,",
       }
     }, 
     rarity = 1, 
